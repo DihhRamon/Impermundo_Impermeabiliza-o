@@ -1,0 +1,1489 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Aura x Aethereal — Design System Criativo</title>
+
+  <!-- Google Fonts: Cormorant Garamond, Inter, Syncopate, Manrope -->
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300..700;1,300..700&family=Inter:wght@100..900&family=Manrope:wght@200..800&family=Syncopate:wght@400;700&display=swap" rel="stylesheet"/>
+
+  <!-- Link Template CSS Sheets -->
+  <link rel="stylesheet" href="../templates/luxury-desert-retreat-1.aura.build/assets/css/styles.css"/>
+  <link rel="stylesheet" href="../templates/parallax-clean/assets/css/core.css"/>
+  <link rel="stylesheet" href="../templates/parallax-clean/assets/css/scroll-overrides.css"/>
+
+  <!-- Scripts: GSAP, ScrollTrigger, Lenis, Iconify -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://unpkg.com/@studio-freight/lenis@1.0.33/dist/lenis.min.js"></script>
+  <script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js"></script>
+
+  <style>
+    /* ==========================================================================
+       DESIGN SYSTEM - DOCUMENTATION LAYOUT & SHELL STYLING (Vanilla CSS)
+       ========================================================================== */
+    :root {
+      --ds-bg-dark: #070a13;
+      --ds-bg-light: #f5ece0;
+      --ds-card-dark: rgba(20, 27, 45, 0.4);
+      --ds-card-light: rgba(255, 255, 255, 0.65);
+      --ds-border-dark: rgba(212, 168, 83, 0.15);
+      --ds-border-light: rgba(196, 87, 42, 0.15);
+      --ds-text-dark: #f0e6d6;
+      --ds-text-light: #2c1810;
+      --ds-primary: #d4a853;
+      --ds-secondary: #c4572a;
+      --ds-accent-green: #374336;
+      --ds-glow-color: rgba(212, 168, 83, 0.25);
+    }
+
+    /* Base Doc Style overrides */
+    body.ds-shell {
+      background-color: var(--ds-bg-dark);
+      color: var(--ds-text-dark);
+      font-family: 'Manrope', sans-serif;
+      transition: background-color 0.8s ease, color 0.8s ease;
+      opacity: 1; /* Override body opacity 0 from core.css */
+    }
+
+    /* Light Theme State */
+    body.ds-shell.light-theme {
+      background-color: var(--ds-bg-light);
+      color: var(--ds-text-light);
+    }
+
+    /* Fixed background radial glows */
+    .ds-bg-glow {
+      position: fixed;
+      width: 80vw;
+      height: 80vh;
+      top: -20vh;
+      right: -20vw;
+      background: radial-gradient(circle, var(--ds-glow-color) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: -1;
+      transition: all 0.8s ease;
+      filter: blur(80px);
+    }
+
+    body.ds-shell.light-theme .ds-bg-glow {
+      --ds-glow-color: rgba(196, 87, 42, 0.1);
+      top: 40vh;
+      left: -20vw;
+    }
+
+    /* Documentation Containers */
+    .ds-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 40px;
+    }
+
+    /* Custom Section Styles for DS Catalog */
+    .ds-section {
+      padding: 100px 0;
+      border-bottom: 1px solid var(--ds-border-dark);
+      position: relative;
+      overflow: hidden;
+    }
+    body.ds-shell.light-theme .ds-section {
+      border-bottom-color: var(--ds-border-light);
+    }
+
+    .ds-section-header {
+      margin-bottom: 60px;
+    }
+
+    .ds-section-subtitle {
+      font-family: 'Syncopate', sans-serif;
+      font-size: 0.75rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--ds-primary);
+      margin-bottom: 12px;
+      display: block;
+    }
+    body.ds-shell.light-theme .ds-section-subtitle {
+      color: var(--ds-secondary);
+    }
+
+    .ds-section-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.5rem, 5vw, 3.5rem);
+      font-weight: 300;
+      line-height: 1.1;
+      margin-bottom: 20px;
+    }
+
+    .ds-section-description {
+      font-size: 1rem;
+      max-width: 700px;
+      line-height: 1.7;
+      opacity: 0.75;
+    }
+
+    /* Grid layout for catalog elements */
+    .ds-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+    }
+
+    /* Cards used to hold code / component previews */
+    .ds-showcase-card {
+      background: var(--ds-card-dark);
+      border: 1px solid var(--ds-border-dark);
+      border-radius: 16px;
+      padding: 32px;
+      backdrop-filter: blur(12px);
+      transition: all 0.4s cubic-bezier(0.33, 1, 0.68, 1);
+    }
+    body.ds-shell.light-theme .ds-showcase-card {
+      background: var(--ds-card-light);
+      border-color: var(--ds-border-light);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+    }
+    .ds-showcase-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--ds-primary);
+      box-shadow: 0 12px 40px var(--ds-glow-color);
+    }
+
+    /* Component wrapper inside showcase card */
+    .ds-component-preview {
+      min-height: 150px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      border-radius: 12px;
+      background: rgba(0, 0, 0, 0.15);
+      margin-bottom: 20px;
+      border: 1px dashed rgba(255, 255, 255, 0.1);
+      position: relative;
+    }
+    body.ds-shell.light-theme .ds-component-preview {
+      background: rgba(255, 255, 255, 0.4);
+      border-color: rgba(0, 0, 0, 0.05);
+    }
+
+    /* Token Spec labels */
+    .ds-token-spec {
+      font-size: 0.78rem;
+      line-height: 1.6;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      padding-top: 16px;
+    }
+    body.ds-shell.light-theme .ds-token-spec {
+      border-top-color: rgba(0, 0, 0, 0.06);
+    }
+
+    .ds-token-spec-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 6px;
+    }
+    .ds-token-spec-label {
+      opacity: 0.5;
+      font-weight: 500;
+    }
+    .ds-token-spec-value {
+      font-family: monospace;
+      font-weight: 600;
+      color: var(--ds-primary);
+    }
+    body.ds-shell.light-theme .ds-token-spec-value {
+      color: var(--ds-secondary);
+    }
+
+    /* Class name copier tool */
+    .ds-class-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(212, 168, 83, 0.1);
+      border: 1px solid rgba(212, 168, 83, 0.2);
+      color: var(--ds-primary);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-family: monospace;
+      font-size: 0.72rem;
+      cursor: pointer;
+      margin-bottom: 12px;
+      transition: all 0.2s ease;
+    }
+    body.ds-shell.light-theme .ds-class-badge {
+      background: rgba(196, 87, 42, 0.06);
+      border-color: rgba(196, 87, 42, 0.2);
+      color: var(--ds-secondary);
+    }
+    .ds-class-badge:hover {
+      background: var(--ds-primary);
+      color: #000;
+    }
+
+    /* Code Block Container */
+    .ds-code-container {
+      position: relative;
+      margin-top: 10px;
+    }
+    .ds-code-block {
+      background: #020408;
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.75rem;
+      color: #8bb2d9;
+      overflow-x: auto;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      margin: 0;
+    }
+    .ds-copy-btn {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background: rgba(255, 255, 255, 0.08);
+      border: none;
+      color: #fff;
+      padding: 4px 8px;
+      font-size: 0.65rem;
+      border-radius: 4px;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      transition: background 0.3s;
+    }
+    .ds-copy-btn:hover {
+      background: var(--ds-primary);
+      color: #000;
+    }
+
+    /* Theme switcher button custom positioning in Nav */
+    .ds-theme-switch-btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--ds-primary);
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-size: 1.1rem;
+    }
+    body.ds-shell.light-theme .ds-theme-switch-btn {
+      background: rgba(0, 0, 0, 0.05);
+      border-color: rgba(0, 0, 0, 0.1);
+      color: var(--ds-secondary);
+    }
+    .ds-theme-switch-btn:hover {
+      transform: scale(1.1) rotate(15deg);
+      box-shadow: 0 0 15px var(--ds-glow-color);
+    }
+
+    /* Interactive animations playground classes */
+    .anim-box {
+      width: 100%;
+      height: 100px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, var(--ds-primary), var(--ds-secondary));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-weight: bold;
+      font-size: 0.85rem;
+      cursor: pointer;
+    }
+
+    /* Spec custom lists */
+    .ds-spec-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .ds-spec-list li {
+      position: relative;
+      padding-left: 20px;
+      margin-bottom: 12px;
+      font-size: 0.88rem;
+      line-height: 1.6;
+    }
+    .ds-spec-list li::before {
+      content: '→';
+      position: absolute;
+      left: 0;
+      color: var(--ds-primary);
+      font-weight: bold;
+    }
+    body.ds-shell.light-theme .ds-spec-list li::before {
+      color: var(--ds-secondary);
+    }
+
+    /* Table styles for Typography */
+    .ds-table-wrap {
+      overflow-x: auto;
+      border-radius: 12px;
+      border: 1px solid var(--ds-border-dark);
+      background: var(--ds-card-dark);
+    }
+    body.ds-shell.light-theme .ds-table-wrap {
+      border-color: var(--ds-border-light);
+      background: var(--ds-card-light);
+    }
+    .ds-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.82rem;
+    }
+    .ds-table th, .ds-table td {
+      padding: 16px 24px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    body.ds-shell.light-theme .ds-table th, body.ds-shell.light-theme .ds-table td {
+      border-bottom-color: rgba(0, 0, 0, 0.05);
+    }
+    .ds-table th {
+      font-family: 'Syncopate', sans-serif;
+      font-size: 0.68rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      opacity: 0.6;
+    }
+
+    /* Interactive Floating Modal styles for DS Demo */
+    .ds-modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(7, 10, 19, 0.8);
+      backdrop-filter: blur(15px);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.5s ease;
+    }
+    .ds-modal-backdrop.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .ds-modal-content {
+      background: #0d1222;
+      border: 1px solid var(--ds-primary);
+      border-radius: 20px;
+      width: 90%;
+      max-width: 500px;
+      padding: 40px;
+      position: relative;
+      transform: scale(0.85);
+      transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+      box-shadow: 0 20px 60px rgba(212, 168, 83, 0.15);
+    }
+    .ds-modal-backdrop.active .ds-modal-content {
+      transform: scale(1);
+    }
+    .ds-modal-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 1.5rem;
+      cursor: pointer;
+      opacity: 0.6;
+      transition: opacity 0.3s;
+    }
+    .ds-modal-close:hover {
+      opacity: 1;
+    }
+
+    /* Color Bubble Showcase */
+    .ds-color-card {
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--ds-border-dark);
+      background: rgba(255, 255, 255, 0.02);
+      transition: transform 0.3s;
+    }
+    .ds-color-card:hover {
+      transform: scale(1.02);
+    }
+    .ds-color-block {
+      height: 120px;
+      width: 100%;
+      position: relative;
+    }
+    .ds-color-info {
+      padding: 20px;
+    }
+    .ds-color-name {
+      font-family: 'Syncopate', sans-serif;
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      margin-bottom: 8px;
+    }
+
+    /* Icon Grid styles */
+    .ds-icon-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+      gap: 15px;
+    }
+    .ds-icon-item {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+      padding: 16px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    body.ds-shell.light-theme .ds-icon-item {
+      background: rgba(0, 0, 0, 0.02);
+      border-color: rgba(0, 0, 0, 0.05);
+    }
+    .ds-icon-item:hover {
+      background: rgba(212, 168, 83, 0.1);
+      border-color: var(--ds-primary);
+      transform: scale(1.05);
+    }
+    .ds-icon-item iconify-icon {
+      font-size: 1.8rem;
+      color: var(--ds-primary);
+      margin-bottom: 8px;
+    }
+    body.ds-shell.light-theme .ds-icon-item iconify-icon {
+      color: var(--ds-secondary);
+    }
+    .ds-icon-name {
+      font-size: 0.65rem;
+      font-family: monospace;
+      opacity: 0.6;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Interactive toast notice */
+    .ds-toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--ds-primary);
+      color: #000;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      transform: translateY(150%);
+      opacity: 0;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      z-index: 9999;
+    }
+    .ds-toast.active {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    /* Dynamic mouse tracking hover radial light effect on cards */
+    .glow-track {
+      position: relative;
+    }
+    .glow-track::before {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      border-radius: inherit;
+      background: radial-gradient(150px circle at var(--mouse-x, 0) var(--mouse-y, 0), rgba(212,168,83,0.3) 0%, transparent 80%);
+      opacity: 0;
+      transition: opacity 0.5s;
+      z-index: 1;
+      pointer-events: none;
+    }
+    .glow-track:hover::before {
+      opacity: 1;
+    }
+    .glow-track-content {
+      position: relative;
+      z-index: 2;
+    }
+
+    /* Fixed top menu adjust for documentation wrapper */
+    .ds-nav-doc {
+      background: rgba(7, 10, 19, 0.8) !important;
+      backdrop-filter: blur(15px);
+      border-bottom: 1px solid var(--ds-border-dark);
+    }
+    body.ds-shell.light-theme .ds-nav-doc {
+      background: rgba(245, 237, 224, 0.85) !important;
+      border-bottom-color: var(--ds-border-light);
+    }
+
+    /* Spinning angle border for components preview */
+    .spin-border-preview {
+      position: relative;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 12px 30px;
+      color: var(--ds-primary);
+      text-transform: uppercase;
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      cursor: pointer;
+    }
+    .spin-border-preview::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      padding: 1.5px;
+      background: conic-gradient(from var(--border-angle, 0deg), transparent 25%, var(--ds-primary) 50%, transparent 75%);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      animation: border-spin 4s linear infinite;
+      border-radius: 4px;
+    }
+
+    /* Stars placement in first fold container */
+    #stars-canvas {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* Scroll Down Indicator custom offset */
+    .scroll-indicator.ds-scroll {
+      bottom: 40px !important;
+    }
+
+    /* Responsive fixes */
+    @media (max-width: 1024px) {
+      .ds-container { padding: 0 24px; }
+      .ds-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body class="ds-shell">
+
+  <!-- Twinkling stars + noise overlay in body layer -->
+  <div class="noise-overlay" id="noise-filter"></div>
+  <div class="ds-bg-glow"></div>
+
+  <!-- Toast Message Alert -->
+  <div class="ds-toast" id="toast-notice">Copiado para a área de transferência!</div>
+
+  <!-- Interactive Floating Modal -->
+  <div class="ds-modal-backdrop" id="demo-modal">
+    <div class="ds-modal-content">
+      <button class="ds-modal-close" id="close-modal">&times;</button>
+      <h3 style="font-family: var(--font-display); font-size: 1.5rem; margin-bottom: 12px; color: var(--gold-light);">Bem-vindo ao Sirocco & Aethereal</h3>
+      <p style="font-size: 0.85rem; line-height: 1.7; opacity: 0.8; margin-bottom: 24px;">Esta é uma janela modal interativa construída combinando os estilos de vidro marroquino (Sirocco) e a precisão brutalista estrutural (Aethereal). O fechamento e a abertura utilizam efeitos de fade-blur com suporte nativo a animação GSAP.</p>
+      <button class="reserve-cta" style="padding: 12px 28px; width: 100%; border: none; cursor: pointer;">Entendido</button>
+    </div>
+  </div>
+
+  <!-- FIXED DOCUMENTATION NAVIGATION -->
+  <nav class="nav ds-nav-doc scrolled" style="position: fixed; width:100%; top:0; z-index:999;">
+    <div class="nav-inner">
+      <a class="nav-logo" href="#" style="font-family: var(--font-display); font-weight: 700; font-size: 1.2rem; letter-spacing: 0.15em; color: var(--cream);">
+        AURA <span style="font-family: 'Syncopate', sans-serif; font-size: 0.8rem; font-weight:400; color: var(--gold);">&nbsp;AETHEREAL</span>
+      </a>
+      <div class="nav-links" style="align-items: center;">
+        <a href="#hero-dobra">Hero</a>
+        <a href="#typography">Tipografia</a>
+        <a href="#colors">Cores</a>
+        <a href="#components">Componentes</a>
+        <a href="#icons">Ícones</a>
+        <a href="#animations">Animações</a>
+        
+        <!-- Interactive Theme Switcher Toggle -->
+        <button class="ds-theme-switch-btn" id="theme-toggle" title="Alternar tema claro/escuro">
+          <iconify-icon icon="lucide:moon" id="theme-icon"></iconify-icon>
+        </button>
+      </div>
+      <button aria-label="Abrir menu" class="nav-hamburger" id="nav-toggle-ds"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
+
+  <!-- Mobile Overlay for Navigation -->
+  <div class="mobile-overlay" id="mobileOverlayDS">
+    <a class="mobile-link" href="#hero-dobra">Hero</a>
+    <a class="mobile-link" href="#typography">Tipografia</a>
+    <a class="mobile-link" href="#colors">Cores</a>
+    <a class="mobile-link" href="#components">Componentes</a>
+    <a class="mobile-link" href="#icons">Ícones</a>
+    <a class="mobile-link" href="#animations">Animações</a>
+  </div>
+
+  <!-- ==========================================================================
+       SECTION 1: HERO / PRIMEIRA DOBRA (DEMONSTRAÇÃO DE CAPACIDADES)
+       ========================================================================== -->
+  <section class="hero" id="hero-dobra" style="min-height: 100vh; position: relative; overflow: hidden; background: #070a13;">
+    <!-- Parallax background using desert image -->
+    <img alt="Fundo Deserto Sirocco" class="hero-bg" src="../templates/luxury-desert-retreat-1.aura.build/assets/2bc4568bba33a6b3_7b9a060d-112b-4bb3-aa79-79572c.webp" style="opacity: 0.65; transform: scale(1.1); filter: contrast(1.1) brightness(0.7);"/>
+    
+    <!-- Stars Background overlay container -->
+    <div id="stars-canvas"></div>
+    <div class="hero-overlay" style="background: linear-gradient(to bottom, rgba(7,10,19,0.4) 0%, rgba(7,10,19,0.7) 70%, #070a13 100%);"></div>
+
+    <!-- Center Hero Box -->
+    <div class="hero-content reveal" style="max-width: 850px; z-index: 10; padding: 20px;">
+      <p class="hero-location" style="margin-bottom: 15px; font-family: 'Syncopate', sans-serif; font-size: 0.65rem; color: var(--gold-light);">
+        <iconify-icon icon="lucide:sparkles" style="color: var(--gold); margin-right: 6px;"></iconify-icon>
+        Design System &amp; Creative Showcase
+      </p>
+      
+      <!-- Big combined title (Luxury Serif + Brutalist Geometric Display) -->
+      <h1 class="hero-title" style="margin-bottom: 10px; line-height: 0.95;">
+        <span style="font-family: var(--font-display); font-weight: 300; font-size: clamp(3.5rem, 10vw, 8rem); color: #ffffff; letter-spacing: 0.15em; text-shadow: 0 4px 30px rgba(0,0,0,0.5);">SIROCCO</span>
+      </h1>
+      <h2 style="font-family: 'Syncopate', sans-serif; font-weight: 700; font-size: clamp(1rem, 3.5vw, 2.5rem); letter-spacing: 0.4em; color: var(--gold); text-transform: uppercase; margin-bottom: 25px; text-shadow: 0 2px 20px rgba(212,168,83,0.3);">
+        AETHEREAL
+      </h2>
+
+      <div class="hero-line" style="background: var(--gold); width: 80px; height: 1px; margin: 15px auto;"></div>
+
+      <p style="font-family: 'Manrope', sans-serif; font-size: clamp(0.85rem, 1.8vw, 1.1rem); max-width: 620px; line-height: 1.7; color: var(--cream-muted); margin: 15px auto 35px auto; font-weight: 300;">
+        Uma fusão orgânica de texturas brutas, calor do deserto, design minimalista e micro-interações fluidas. Explore e copie especificações diretamente nesta interface.
+      </p>
+
+      <!-- Glassmorphic button with spinning conic gradient border -->
+      <div style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
+        <a class="hero-cta" href="#components" style="display: inline-block;">Ver Componentes</a>
+        <a class="nav-cta" href="#colors" style="display: inline-flex; align-items: center; justify-content: center; font-size: 0.72rem; letter-spacing: 0.15em; text-transform: uppercase; font-family: 'Syncopate', sans-serif; border: 1px solid var(--gold); color: #fff; padding: 16px 36px;">Explorar Cores</a>
+      </div>
+    </div>
+
+    <!-- Scroll Indicator at bottom -->
+    <div class="scroll-indicator ds-scroll">
+      <span>Rolar</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+
+  <div class="ds-container">
+
+    <!-- ==========================================================================
+         SECTION 2: TYPOGRAPHY (TIPOGRAFIA)
+         ========================================================================== -->
+    <section class="ds-section" id="typography">
+      <div class="ds-section-header">
+        <span class="ds-section-subtitle">01 / TIPOGRAFIA</span>
+        <h2 class="ds-section-title">Escalas e Famílias Tipográficas</h2>
+        <p class="ds-section-description">
+          A interface combina a elegância orgânica da fonte Serif display <strong>Cormorant Garamond</strong> com a solidez geométrica industrial da <strong>Syncopate</strong>, suportadas pelas famílias de corpo legíveis <strong>Inter</strong> e <strong>Manrope</strong>.
+        </p>
+      </div>
+
+      <!-- Typography Strategy Alert -->
+      <div class="ds-showcase-card" style="margin-bottom: 40px; border-left: 4px solid var(--ds-primary);">
+        <h3 style="font-family: var(--font-display); font-size: 1.3rem; margin-bottom: 10px; color: var(--gold-light);">Estratégia de Carregamento &amp; Fallbacks</h3>
+        <p style="font-size: 0.85rem; line-height: 1.6; opacity: 0.85;">
+          <strong>Carregamento:</strong> Efetuado via CDN do Google Fonts utilizando preconexão (<code>preconnect</code>) no cabeçalho do documento para maximizar a velocidade de renderização e evitar saltos de layout (CLS).
+        </p>
+        <ul class="ds-spec-list" style="margin-top: 15px;">
+          <li><strong>Display Serif (Sirocco):</strong> <code>'Cormorant Garamond', Georgia, serif</code> (Pesos: 300, 400, 500, 600, 700)</li>
+          <li><strong>Display Brutalist (Aethereal):</strong> <code>'Syncopate', Impact, sans-serif</code> (Pesos: 400, 700)</li>
+          <li><strong>Fontes de Corpo (Leitura):</strong> <code>'Inter', 'Manrope', system-ui, sans-serif</code> (Pesos: 100 ao 900)</li>
+        </ul>
+      </div>
+
+      <!-- Type Scale Table -->
+      <div class="ds-table-wrap reveal">
+        <table class="ds-table">
+          <thead>
+            <tr>
+              <th>Função / Tag</th>
+              <th>Visualização</th>
+              <th>Família</th>
+              <th>Tamanho / Peso</th>
+              <th>Espaçamento (Letter)</th>
+              <th>Classe CSS</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Display Hero -->
+            <tr>
+              <td><span style="font-family: monospace; font-size:0.75rem;">Display Hero</span></td>
+              <td><span style="font-family: var(--font-display); font-size: 3rem; font-weight: 300;">SIROCCO</span></td>
+              <td>Cormorant Garamond</td>
+              <td>3.0rem (clamp) / 300</td>
+              <td>0.2em</td>
+              <td><span class="ds-class-badge" onclick="copyClass('.hero-title')">.hero-title</span></td>
+            </tr>
+            <!-- Brutalist Display -->
+            <tr>
+              <td><span style="font-family: monospace; font-size:0.75rem;">Display Brutalist</span></td>
+              <td><span style="font-family: 'Syncopate', sans-serif; font-size: 1.5rem; font-weight: 700;">CONCRETO</span></td>
+              <td>Syncopate</td>
+              <td>1.5rem / 700</td>
+              <td>0.4em</td>
+              <td><span class="ds-class-badge" onclick="copyClass('.display')">.display</span></td>
+            </tr>
+            <!-- Heading 1 -->
+            <tr>
+              <td><span style="font-family: monospace; font-size:0.75rem;">H1</span></td>
+              <td><h1 style="margin:0; font-size: 2.2rem;">Título Principal H1</h1></td>
+              <td>Cormorant Garamond</td>
+              <td>2.2rem / 300</td>
+              <td>-0.02em</td>
+              <td><span class="ds-class-badge" onclick="copyClass('.section-title')">.section-title</span></td>
+            </tr>
+            <!-- Heading 2 -->
+            <tr>
+              <td><span style="font-family: monospace; font-size:0.75rem;">H2</span></td>
+              <td><h2 style="margin:0; font-size: 1.8rem; font-weight:400;">Título H2</h2></td>
+              <td>Cormorant Garamond</td>
+              <td>1.8rem / 400</td>
+              <td>0.02em</td>
+              <td><span class="ds-class-badge" onclick="copyClass('h2')">h2</span></td>
+            </tr>
+            <!-- Heading 3 -->
+            <tr>
+              <td><span style="font-family: monospace; font-size:0.75rem;">H3</span></td>
+              <td><h3 style="margin:0; font-size: 1.3rem; font-weight:400;">Subtítulo H3</h3></td>
+              <td>Cormorant Garamond</td>
+              <td>1.3rem / 400</td>
+              <td>0.02em</td>
+              <td><span class="ds-class-badge" onclick="copyClass('h3')">h3</span></td>
+            </tr>
+            <!-- Body Large -->
+            <tr>
+              <td><span style="font-family: monospace; font-size:0.75rem;">body-lg</span></td>
+              <td><span class="split-animate" style="font-size: 1.1rem; font-weight: 300;">Texto de leitura amplo.</span></td>
+              <td>Manrope / Inter</td>
+              <td>1.1rem / 300</td>
+              <td>Normal</td>
+              <td><span class="ds-class-badge" onclick="copyClass('.text-xl')">.text-xl</span></td>
+            </tr>
+            <!-- Body Default -->
+            <tr>
+              <td><span style="font-family: monospace; font-size:0.75rem;">body</span></td>
+              <td><p style="margin:0; font-size: 0.82rem; font-weight: 300;">Corpo de texto padrão para leitura de blocos longos de conteúdo.</p></td>
+              <td>Inter</td>
+              <td>0.82rem / 300</td>
+              <td>Normal</td>
+              <td><span class="ds-class-badge" onclick="copyClass('body')">body</span></td>
+            </tr>
+            <!-- Body Small -->
+            <tr>
+              <td><span style="font-family: monospace; font-size:0.75rem;">body-sm</span></td>
+              <td><span style="font-size: 0.76rem; font-weight: 300; opacity: 0.7;">Informações adicionais de apoio.</span></td>
+              <td>Inter</td>
+              <td>0.76rem / 300</td>
+              <td>Normal</td>
+              <td><span class="ds-class-badge" onclick="copyClass('.suite-info p')">.suite-info p</span></td>
+            </tr>
+            <!-- Captions / Labels -->
+            <tr>
+              <td><span style="font-family: monospace; font-size:0.75rem;">Label / Caption</span></td>
+              <td><span class="section-label" style="margin:0;">Nossa História</span></td>
+              <td>Inter</td>
+              <td>0.72rem / 500</td>
+              <td>0.12em</td>
+              <td><span class="ds-class-badge" onclick="copyClass('.section-label')">.section-label</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+         SECTION 3: COLORS (SISTEMA DE CORES)
+         ========================================================================== -->
+    <section class="ds-section" id="colors">
+      <div class="ds-section-header">
+        <span class="ds-section-subtitle">02 / CORES</span>
+        <h2 class="ds-section-title">Paleta de Cores &amp; Regras de Uso</h2>
+        <p class="ds-section-description">
+          Uma fusão harmoniosa de tonalidades terrosas quentes com tons noturnos profundos e a rigidez do concreto. Nossas cores possuem alto índice de contraste focado em conformidade AA e AAA.
+        </p>
+      </div>
+
+      <!-- Color Palette Grid -->
+      <h3 style="font-family: var(--font-display); font-size: 1.5rem; margin-bottom: 20px; color: var(--gold-light);">Cores Primárias (Warm &amp; Cold)</h3>
+      <div class="ds-grid reveal" style="margin-bottom: 50px;">
+        <!-- Sand -->
+        <div class="ds-color-card">
+          <div class="ds-color-block" style="background-color: #F5EDE0;"></div>
+          <div class="ds-color-info">
+            <div class="ds-color-name">Sand (Areia)</div>
+            <div class="ds-token-spec">
+              <div class="ds-token-spec-item"><span class="ds-token-spec-label">HEX</span><span class="ds-token-spec-value">#F5EDE0</span></div>
+              <div class="ds-token-spec-item"><span class="ds-token-spec-label">RGB</span><span class="ds-token-spec-value">245, 237, 224</span></div>
+              <div class="ds-token-spec-item"><span class="ds-token-spec-label">HSL</span><span class="ds-token-spec-value">37°, 41%, 92%</span></div>
+              <div class="ds-token-spec-item"><span class="ds-token-spec-label">Uso</span><span class="ds-token-spec-value">Fundo Dia / Textos Noite</span></div>
+            </div>
+          </div>
+        </div>
+        <!-- Terracotta -->
+        <div class="ds-color-card">
+          <div class="ds-color-block" style="background-color: #C4572A;"></div>
+          <div class="ds-color-info">
+            <div class="ds-color-name">Terracotta</div>
+            <div class="ds-token-spec">
+              <div class="ds-token-spec-item"><span class="ds-token-spec-label">HEX</span><span class="ds-token-spec-value">#C4572A</span></div>
+              <div class="ds-token-spec-item"><span class="ds-token-spec-label">RGB</span><span class="ds-token-spec-value">196, 87, 42</span></div>
+              <div class="ds-token-spec-item"><span class="ds-token-spec-label">HSL</span><span class="ds-token-spec-value">17°, 65%, 47%</span></div>
+              <div class="ds-token-spec-item"><span class="ds-token-spec-label">Uso</span><span class="ds-token-spec-value">Destaque Principal / Hover</span></div>
+            </div>
+          </div>
+        </div>
+        <!-- Gold -->
+        <div class="ds-color-card">
+          <div class="ds-color-block" style="background-color: #D4A853;"></div>
+          <div class="ds-color-info">
+            <div class="ds-color-name">Gold (Ouro)</div>
+            <div class="ds-token-spec">
+              <div class="ds-token-spec-item"><span class="ds-token-spec-label">HEX</span><span class="ds-token-spec-value">#D4A853</span></div>
+              <div class="ds-token-spec-item"><span class="ds-token-spec-label">RGB</span><span class="ds-token-spec-value">212, 168, 83</span></div>
+              <div class="ds-token-spec-item"><span class="ds-token-spec-label">HSL</span><span class="ds-token-spec-value">39°, 61%, 58%</span></div>
+              <div class="ds-token-spec-item"><span class="ds-token-spec-label">Uso</span><span class="ds-token-spec-value">Acento / Bordas / Ícones</span></div>
+            </div>
+          </div>
+        </div>
+        <!-- Night -->
+        <div class="ds-color-card">
+          <div class="ds-color-block" style="background-color: #0A0F1E;"></div>
+          <div class="ds-color-info">
+            <div class="ds-color-name">Night (Noite)</div>
+            <div class="ds-token-spec">
+              <div class="ds-token-spec-item"><span class="ds-token-spec-label">HEX</span><span class="ds-token-spec-value">#0A0F1E</span></div>
+              <div class="ds-token-spec-item"><span class="ds-token-spec-label">RGB</span><span class="ds-token-spec-value">10, 15, 30</span></div>
+              <div class="ds-token-spec-item"><span class="ds-token-spec-label">HSL</span><span class="ds-token-spec-value">225°, 50%, 8%</span></div>
+              <div class="ds-token-spec-item"><span class="ds-token-spec-label">Uso</span><span class="ds-token-spec-value">Fundo Noite / Textos Dia</span></div>
+            </div>
+          </div>
+        </div>
+        <!-- Deep Moss -->
+        <div class="ds-color-card">
+          <div class="ds-color-block" style="background-color: #374336;"></div>
+          <div class="ds-color-info">
+            <div class="ds-color-name">Deep Moss</div>
+            <div class="ds-token-spec">
+              <div class="ds-token-spec-item"><span class="ds-token-spec-label">HEX</span><span class="ds-token-spec-value">#374336</span></div>
+              <div class="ds-token-spec-item"><span class="ds-token-spec-label">RGB</span><span class="ds-token-spec-value">55, 67, 54</span></div>
+              <div class="ds-token-spec-item"><span class="ds-token-spec-label">HSL</span><span class="ds-token-spec-value">115°, 11%, 24%</span></div>
+              <div class="ds-token-spec-item"><span class="ds-token-spec-label">Uso</span><span class="ds-token-spec-value">Acento Brutalista</span></div>
+            </div>
+          </div>
+        </div>
+        <!-- Concrete -->
+        <div class="ds-color-card">
+          <div class="ds-color-block" style="background-color: #E3E1DC;"></div>
+          <div class="ds-color-info">
+            <div class="ds-color-name">Concrete (Pedra)</div>
+            <div class="ds-token-spec">
+              <div class="ds-token-spec-item"><span class="ds-token-spec-label">HEX</span><span class="ds-token-spec-value">#E3E1DC</span></div>
+              <div class="ds-token-spec-item"><span class="ds-token-spec-label">RGB</span><span class="ds-token-spec-value">227, 225, 220</span></div>
+              <div class="ds-token-spec-item"><span class="ds-token-spec-label">HSL</span><span class="ds-token-spec-value">43°, 10%, 88%</span></div>
+              <div class="ds-token-spec-item"><span class="ds-token-spec-label">Uso</span><span class="ds-token-spec-value">Fundo Brutalista</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Gradients and Opacity Variants -->
+      <h3 style="font-family: var(--font-display); font-size: 1.5rem; margin-bottom: 20px; color: var(--gold-light);">Gradientes e Opacidades</h3>
+      <div class="ds-grid reveal">
+        <!-- Gradient 1 -->
+        <div class="ds-showcase-card">
+          <div class="ds-color-block" style="background: linear-gradient(135deg, var(--gold), var(--terracotta)); border-radius: 8px;"></div>
+          <div class="ds-color-info" style="padding: 15px 0 0 0;">
+            <div class="ds-color-name">Gradiente Primário (Sunset)</div>
+            <p style="font-size:0.75rem; opacity:0.8;">Usado em CTAs de alta conversão como botões de reserva e chamadas importantes.</p>
+            <div class="ds-token-spec" style="margin-top:10px;">
+              <div class="ds-token-spec-item"><span class="ds-token-spec-label">CSS</span><span class="ds-token-spec-value" style="font-size:0.65rem;">linear-gradient(135deg, var(--gold), var(--terracotta))</span></div>
+            </div>
+          </div>
+        </div>
+        <!-- Gradient 2 -->
+        <div class="ds-showcase-card">
+          <div class="ds-color-block" style="background: linear-gradient(to bottom, rgba(10,15,30,0.85) 0%, rgba(10,15,30,0.4) 50%, transparent 100%); border-radius: 8px;"></div>
+          <div class="ds-color-info" style="padding: 15px 0 0 0;">
+            <div class="ds-color-name">Fundo Overlay Hammam</div>
+            <p style="font-size:0.75rem; opacity:0.8;">Gradiente suave de máscara escurecida para textos sobrepostos a imagens de resort.</p>
+            <div class="ds-token-spec" style="margin-top:10px;">
+              <div class="ds-token-spec-item"><span class="ds-token-spec-label">CSS</span><span class="ds-token-spec-value" style="font-size:0.65rem;">linear-gradient(to bottom, rgba(10,15,30,0.85), transparent)</span></div>
+            </div>
+          </div>
+        </div>
+        <!-- Opacity Variations -->
+        <div class="ds-showcase-card">
+          <div style="display: flex; gap: 10px; height: 120px;">
+            <div style="flex:1; background: rgba(240,230,214,0.1); border:1px solid rgba(255,255,255,0.1); border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:0.7rem;">10%</div>
+            <div style="flex:1; background: rgba(240,230,214,0.3); border:1px solid rgba(255,255,255,0.1); border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:0.7rem;">30%</div>
+            <div style="flex:1; background: rgba(240,230,214,0.6); border:1px solid rgba(255,255,255,0.1); border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:0.7rem; color:#000;">60%</div>
+          </div>
+          <div class="ds-color-info" style="padding: 15px 0 0 0;">
+            <div class="ds-color-name">Opacidades Cream Muted</div>
+            <p style="font-size:0.75rem; opacity:0.8;">Variações de transparência da cor Cream para bordas e textos de suporte nos cards de noite.</p>
+            <div class="ds-token-spec" style="margin-top:10px;">
+              <div class="ds-token-spec-item"><span class="ds-token-spec-label">CSS Variable</span><span class="ds-token-spec-value" style="font-size:0.65rem;">--cream-muted</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+         SECTION 4: UI COMPONENTS (COMPONENTES DE INTERFACE)
+         ========================================================================== -->
+    <section class="ds-section" id="components">
+      <div class="ds-section-header">
+        <span class="ds-section-subtitle">03 / UI COMPONENTS</span>
+        <h2 class="ds-section-title">Biblioteca de Elementos Interativos</h2>
+        <p class="ds-section-description">
+          Componentes prontos, estilizados com CSS puro e reforçados com micro-interações que elevam a experiência de navegação e preenchimento de formulários.
+        </p>
+      </div>
+
+      <div class="ds-grid">
+        
+        <!-- Component: Buttons -->
+        <div class="ds-showcase-card glow-track">
+          <div class="glow-track-content">
+            <h4 style="font-family: var(--font-display); font-size: 1.2rem; margin-bottom: 20px;">1. Botões (Buttons)</h4>
+            
+            <div class="ds-component-preview" style="flex-direction: column; gap: 20px;">
+              <!-- Border Spin Button -->
+              <button class="hero-cta" style="border:none;">Border Spin CTA</button>
+              
+              <!-- Gradient Button -->
+              <button class="reserve-cta" style="border:none;">Reserve Gradient</button>
+
+              <!-- Classic Nav Cta -->
+              <button class="nav-cta" style="background: none; cursor: pointer;">Minimal Border</button>
+            </div>
+            
+            <span class="ds-class-badge" onclick="copyClass('.hero-cta')">.hero-cta</span>
+            <span class="ds-class-badge" onclick="copyClass('.reserve-cta')">.reserve-cta</span>
+            <div class="ds-token-spec">
+              <div class="ds-token-spec-item"><span class="ds-token-spec-label">Interação</span><span class="ds-token-spec-value">Transform Translate Y / Border Conic angle spin / Shadow glow</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Component: Inputs -->
+        <div class="ds-showcase-card glow-track">
+          <div class="glow-track-content">
+            <h4 style="font-family: var(--font-display); font-size: 1.2rem; margin-bottom: 20px;">2. Campos de Entrada (Inputs)</h4>
+            
+            <div class="ds-component-preview" style="flex-direction: column; gap: 15px; align-items: stretch;">
+              <!-- Premium Input Group -->
+              <div style="position: relative; margin-bottom: 8px;">
+                <input type="text" placeholder="Nome Completo" style="width: 100%; padding: 14px 16px; background: rgba(255,255,255,0.03); border: 1px solid var(--ds-border-dark); border-radius: 8px; color: #fff; font-size: 0.8rem; outline: none; transition: all 0.3s;"/>
+                <span style="position: absolute; right: 14px; top: 14px; color: var(--ds-primary); opacity: 0.5;"><iconify-icon icon="lucide:user"></iconify-icon></span>
+              </div>
+              
+              <!-- Dropdown Premium -->
+              <div style="position: relative;">
+                <select style="width: 100%; padding: 14px 16px; background: rgba(255,255,255,0.03); border: 1px solid var(--ds-border-dark); border-radius: 8px; color: #fff; font-size: 0.8rem; outline: none; appearance: none; cursor: pointer;">
+                  <option style="background:#070a13;">Selecione uma Experiência</option>
+                  <option style="background:#070a13;">Ritual Hammam</option>
+                  <option style="background:#070a13;">Yoga nas Dunas</option>
+                </select>
+                <span style="position: absolute; right: 16px; top: 14px; pointer-events: none; opacity:0.5; color: var(--ds-primary);"><iconify-icon icon="lucide:chevron-down"></iconify-icon></span>
+              </div>
+            </div>
+            
+            <div class="ds-token-spec">
+              <div class="ds-token-spec-item"><span class="ds-token-spec-label">Focus State</span><span class="ds-token-spec-value">Border color transition / Gold glow / SVG active color</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Component: Badges & Tooltips -->
+        <div class="ds-showcase-card glow-track">
+          <div class="glow-track-content">
+            <h4 style="font-family: var(--font-display); font-size: 1.2rem; margin-bottom: 20px;">3. Badges &amp; Tooltips</h4>
+            
+            <div class="ds-component-preview" style="gap: 15px; flex-wrap: wrap;">
+              <!-- Badges -->
+              <span class="section-label" style="margin-bottom:0; background: rgba(196,87,42,0.15); padding: 6px 12px; border-radius: 4px; border: 1px solid var(--ds-secondary);">Exclusivo</span>
+              <span class="section-label" style="margin-bottom:0; background: rgba(212,168,83,0.15); padding: 6px 12px; border-radius: 4px; border: 1px solid var(--ds-primary); color: var(--ds-primary);">Popular</span>
+              
+              <!-- Tooltip Demo Container -->
+              <div style="position: relative; display: inline-block; cursor: help;" class="tooltip-trigger">
+                <span style="border-bottom: 1px dashed var(--ds-primary); font-size:0.8rem; padding-bottom:2px; color: var(--ds-primary);">Passe o mouse aqui</span>
+                <!-- Tooltip Content -->
+                <div style="position: absolute; bottom: 130%; left: 50%; transform: translateX(-50%) translateY(10px); background: #141b2d; border: 1px solid var(--ds-primary); color: #fff; font-size: 0.68rem; padding: 8px 12px; border-radius: 6px; white-space: nowrap; visibility: hidden; opacity: 0; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 50; box-shadow: 0 4px 15px rgba(0,0,0,0.5);" class="tooltip-content">
+                  Reservas online 24/7 livres de taxas.
+                </div>
+              </div>
+            </div>
+            
+            <span class="ds-class-badge" onclick="copyClass('.section-label')">.section-label</span>
+            <div class="ds-token-spec">
+              <div class="ds-token-spec-item"><span class="ds-token-spec-label">Tooltip CSS</span><span class="ds-token-spec-value">visibility: visible / opacity: 1 on hover</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Component: Cards -->
+        <div class="ds-showcase-card glow-track" style="grid-column: 1 / -1;">
+          <div class="glow-track-content">
+            <h4 style="font-family: var(--font-display); font-size: 1.2rem; margin-bottom: 30px;">4. Cartões Integrados (Cards)</h4>
+            
+            <div class="ds-grid">
+              <!-- Sirocco Luxury Card -->
+              <div class="suite-card" style="max-width: 100%; background: rgba(255,255,255,0.02); border: 1px solid var(--ds-border-dark);">
+                <div class="suite-image">
+                  <img alt="Suíte Duna" src="../templates/luxury-desert-retreat-1.aura.build/assets/39e4e1ac34fd0b6c_11adc7f8-ec99-4e48-af98-53f270.jpg"/>
+                </div>
+                <div class="suite-info">
+                  <h3 style="color: #fff;">Suíte Imperial Deserto</h3>
+                  <p>Vistas de 360 graus para as dunas majestosas de Erg Chebbi, com piscina privativa aquecida e terraço panorâmico.</p>
+                  <span class="suite-price">A partir de €720 / noite</span>
+                </div>
+              </div>
+
+              <!-- Brutalist Stack Card (Aethereal Style) -->
+              <div style="background: #111; border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between;">
+                <div style="padding: 30px;">
+                  <div style="font-family: 'Syncopate', sans-serif; font-size: 2.5rem; opacity: 0.15; color:#fff; font-weight:700; margin-bottom: 10px;">01</div>
+                  <h3 style="font-family: 'Syncopate', sans-serif; font-size: 1.1rem; font-weight: 700; color: #fff; letter-spacing: 0.05em; margin-bottom: 12px;">CASA DA FALÉSIA</h3>
+                  <p style="font-size: 0.76rem; line-height: 1.6; color: #aaa; margin-bottom: 20px;">Estrutura minimalista de concreto e vidro suspensa sobre o abismo do mar do norte, mesclando risco e elegância.</p>
+                  <button style="background:none; border:none; border-bottom: 1px solid rgba(255,255,255,0.3); color:#fff; padding-bottom:6px; font-size: 0.68rem; letter-spacing:0.15em; font-family:'Syncopate', sans-serif; cursor:pointer; text-transform:uppercase;">Ver Detalhes</button>
+                </div>
+                <div style="height: 180px; overflow:hidden;">
+                  <img alt="Projeto Brutalista" src="../templates/parallax-clean/assets/98984301b87c.webp" style="width: 100%; height:100%; object-fit: cover; transition: transform 1s ease;" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'"/>
+                </div>
+              </div>
+            </div>
+
+            <div class="ds-token-spec" style="margin-top: 30px;">
+              <div class="ds-token-spec-item"><span class="ds-token-spec-label">Suite Card Hover</span><span class="ds-token-spec-value">translateY(-4px) / Scale image 1.05 / Shadow hover opacity shift</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Component: Interactive Modals & Sections Toggle -->
+        <div class="ds-showcase-card glow-track" style="grid-column: 1 / -1;">
+          <div class="glow-track-content">
+            <h4 style="font-family: var(--font-display); font-size: 1.2rem; margin-bottom: 25px;">5. Janelas Modais &amp; Seções (Modals &amp; Sections)</h4>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+              <!-- Trigger Modal Column -->
+              <div class="ds-component-preview" style="flex-direction:column; gap:16px;">
+                <p style="font-size:0.8rem; text-align:center; opacity:0.8; max-width:280px; line-height:1.5;">Clique no botão abaixo para disparar e testar o funcionamento da janela modal animada.</p>
+                <button class="reserve-cta" id="trigger-modal-btn" style="border:none;">Disparar Modal</button>
+              </div>
+
+              <!-- Day & Night Section Styles -->
+              <div class="ds-component-preview" style="flex-direction:column; gap:15px; padding: 20px;">
+                <div style="width:100%; background: #F5EDE0; color: #2C1810; padding: 15px; border-radius: 8px; border: 1px solid rgba(196,87,42,0.15);">
+                  <span class="section-label" style="color: var(--terracotta); font-size:0.6rem; margin-bottom:4px;">Day Theme (.day-section)</span>
+                  <p style="font-size: 0.72rem; line-height: 1.4; margin:0;">Tonalidades quentes que simulam as dunas ensolaradas sob a luz do dia.</p>
+                </div>
+                <div style="width:100%; background: #0A0F1E; color: #F0E6D6; padding: 15px; border-radius: 8px; border: 1px solid rgba(212,168,83,0.15);">
+                  <span class="section-label" style="color: var(--gold); font-size:0.6rem; margin-bottom:4px;">Night Theme (.night-section)</span>
+                  <p style="font-size: 0.72rem; line-height: 1.4; margin:0; opacity:0.75;">Tons de azul noite escuro com detalhes cintilantes dourados de oásis.</p>
+                </div>
+              </div>
+            </div>
+            
+            <span class="ds-class-badge" onclick="copyClass('.day-section')">.day-section</span>
+            <span class="ds-class-badge" onclick="copyClass('.night-section')">.night-section</span>
+            <div class="ds-token-spec">
+              <div class="ds-token-spec-item"><span class="ds-token-spec-label">Modal JS Trigger</span><span class="ds-token-spec-value">classToggle('active') / focusTrap / body overflow control</span></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+         SECTION 5: ICONS (ÍCONES E BIBLIOTECAS)
+         ========================================================================== -->
+    <section class="ds-section" id="icons">
+      <div class="ds-section-header">
+        <span class="ds-section-subtitle">04 / ICONOGRAFIA</span>
+        <h2 class="ds-section-title">Biblioteca de Ícones Integrada</h2>
+        <p class="ds-section-description">
+          Utilizamos o motor de renderização leve e moderno do <strong>Iconify Web Component</strong>. Os ícones podem ser estilizados dinamicamente via CSS utilizando classes nativas ou propriedades de cor herdadas.
+        </p>
+      </div>
+
+      <div class="ds-showcase-card">
+        <h4 style="font-family: var(--font-display); font-size: 1.2rem; margin-bottom: 25px; color: var(--gold-light);">Biblioteca Lucide (Clique para copiar a tag)</h4>
+        
+        <div class="ds-icon-grid" id="icon-container">
+          <!-- Icons list triggered by JS -->
+          <div class="ds-icon-item" onclick="copyIconTag('lucide:map-pin')">
+            <iconify-icon icon="lucide:map-pin"></iconify-icon>
+            <div class="ds-icon-name">map-pin</div>
+          </div>
+          <div class="ds-icon-item" onclick="copyIconTag('lucide:droplets')">
+            <iconify-icon icon="lucide:droplets"></iconify-icon>
+            <div class="ds-icon-name">droplets</div>
+          </div>
+          <div class="ds-icon-item" onclick="copyIconTag('lucide:hand')">
+            <iconify-icon icon="lucide:hand"></iconify-icon>
+            <div class="ds-icon-name">hand</div>
+          </div>
+          <div class="ds-icon-item" onclick="copyIconTag('lucide:sun')">
+            <iconify-icon icon="lucide:sun"></iconify-icon>
+            <div class="ds-icon-name">sun</div>
+          </div>
+          <div class="ds-icon-item" onclick="copyIconTag('lucide:clock')">
+            <iconify-icon icon="lucide:clock"></iconify-icon>
+            <div class="ds-icon-name">clock</div>
+          </div>
+          <div class="ds-icon-item" onclick="copyIconTag('lucide:sparkles')">
+            <iconify-icon icon="lucide:sparkles"></iconify-icon>
+            <div class="ds-icon-name">sparkles</div>
+          </div>
+          <div class="ds-icon-item" onclick="copyIconTag('lucide:arrow-right')">
+            <iconify-icon icon="lucide:arrow-right"></iconify-icon>
+            <div class="ds-icon-name">arrow-right</div>
+          </div>
+          <div class="ds-icon-item" onclick="copyIconTag('lucide:user')">
+            <iconify-icon icon="lucide:user"></iconify-icon>
+            <div class="ds-icon-name">user</div>
+          </div>
+          <div class="ds-icon-item" onclick="copyIconTag('lucide:chevron-down')">
+            <iconify-icon icon="lucide:chevron-down"></iconify-icon>
+            <div class="ds-icon-name">chevron-down</div>
+          </div>
+          <div class="ds-icon-item" onclick="copyIconTag('lucide:menu')">
+            <iconify-icon icon="lucide:menu"></iconify-icon>
+            <div class="ds-icon-name">menu</div>
+          </div>
+          <div class="ds-icon-item" onclick="copyIconTag('lucide:moon')">
+            <iconify-icon icon="lucide:moon"></iconify-icon>
+            <div class="ds-icon-name">moon</div>
+          </div>
+          <div class="ds-icon-item" onclick="copyIconTag('lucide:copy')">
+            <iconify-icon icon="lucide:copy"></iconify-icon>
+            <div class="ds-icon-name">copy</div>
+          </div>
+        </div>
+
+        <div style="margin-top: 30px; padding: 20px; background: rgba(0,0,0,0.2); border-radius: 8px; border: 1px dashed rgba(255,255,255,0.1);">
+          <h5 style="font-family: 'Syncopate', sans-serif; font-size:0.75rem; letter-spacing:0.1em; color: var(--ds-primary); margin-bottom:8px;">Exemplo de Código para Uso:</h5>
+          <pre class="ds-code-block">&lt;script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js"&gt;&lt;/script&gt;
+&lt;iconify-icon icon="lucide:map-pin" class="icon-class"&gt;&lt;/iconify-icon&gt;</pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+         SECTION 6: ANIMATIONS PLAYGROUND (ANIMAÇÕES)
+         ========================================================================== -->
+    <section class="ds-section" id="animations" style="border-bottom: none;">
+      <div class="ds-section-header">
+        <span class="ds-section-subtitle">05 / ANIMAÇÕES</span>
+        <h2 class="ds-section-title">Efeitos de Transição &amp; Scroll</h2>
+        <p class="ds-section-description">
+          Especificações das animações do design system. Inclui a revelação de elementos com a rolagem de tela e efeitos de preenchimento e distorção de texto.
+        </p>
+      </div>
+
+      <div class="ds-grid">
+        <!-- Scroll Reveal Spec -->
+        <div class="ds-showcase-card glow-track">
+          <div class="glow-track-content">
+            <h4 style="font-family: var(--font-display); font-size: 1.2rem; margin-bottom: 20px;">1. Revelação Gradual (Scroll Reveal)</h4>
+            <p style="font-size:0.8rem; line-height:1.6; opacity:0.8; margin-bottom: 20px;">
+              Utiliza a API nativa do navegador <code>IntersectionObserver</code> para monitorar o scroll do usuário e ativar a visibilidade dos cards sem prejudicar a performance geral do site.
+            </p>
+            <ul class="ds-spec-list" style="margin-bottom: 25px;">
+              <li><code>.reveal</code>: Sobe o elemento verticalmente.</li>
+              <li><code>.reveal-left</code>: Desloca o elemento a partir da esquerda.</li>
+              <li><code>.stagger-up</code>: Revela sub-elementos com delays ordenados de 120ms.</li>
+            </ul>
+            <div class="ds-class-badge" onclick="copyClass('.reveal')">.reveal</div>
+            <div class="ds-class-badge" onclick="copyClass('.reveal-left')">.reveal-left</div>
+            <div class="ds-class-badge" onclick="copyClass('.stagger-up')">.stagger-up</div>
+          </div>
+        </div>
+
+        <!-- Split Text Spec -->
+        <div class="ds-showcase-card glow-track">
+          <div class="glow-track-content">
+            <h4 style="font-family: var(--font-display); font-size: 1.2rem; margin-bottom: 20px;">2. Divisão de Palavras (Split Reveal)</h4>
+            <p style="font-size:0.8rem; line-height:1.6; opacity:0.8; margin-bottom: 20px;">
+              Divide os blocos de texto ou títulos em palavras agrupadas por contêineres CSS com <code>overflow: hidden</code>. Ao rolar, as palavras sobem com efeito de slide.
+            </p>
+            <div style="padding: 20px; background: rgba(0,0,0,0.15); border-radius: 8px; margin-bottom: 20px; border:1px solid rgba(255,255,255,0.05);">
+              <h1 class="split-animate" style="font-family: var(--font-display); font-size: 2rem; margin: 0; color:#fff;">MÚSICA CONGELADA</h1>
+            </div>
+            <div class="ds-class-badge" onclick="copyClass('.split-animate')">.split-animate</div>
+            <div class="ds-token-spec">
+              <div class="ds-token-spec-item"><span class="ds-token-spec-label">Biblioteca</span><span class="ds-token-spec-value">GSAP + ScrollTrigger timeline</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Background animations options -->
+        <div class="ds-showcase-card glow-track" style="grid-column: 1 / -1;">
+          <div class="glow-track-content">
+            <h4 style="font-family: var(--font-display); font-size: 1.2rem; margin-bottom: 25px;">3. Elementos de Ambientação do Fundo (Estrelas &amp; Noise Filtro)</h4>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+              <!-- Twinkling stars configuration -->
+              <div>
+                <h5 style="font-family: 'Syncopate', sans-serif; font-size:0.75rem; color: var(--ds-primary); margin-bottom:12px;">twinkle-stars (Estrelas Cintilantes)</h5>
+                <p style="font-size:0.8rem; line-height:1.6; opacity:0.8; margin-bottom:15px;">Criadas dinamicamente via JS com tamanhos de 1px a 3px e delays aleatórios para simular a abóbada celeste real do Saara.</p>
+                <div class="ds-code-container">
+                  <pre class="ds-code-block">@keyframes twinkle {
+  0%, 100% { opacity: 0; }
+  50% { opacity: 0.9; }
+}</pre>
+                </div>
+              </div>
+
+              <!-- Grain filter configuration -->
+              <div>
+                <h5 style="font-family: 'Syncopate', sans-serif; font-size:0.75rem; color: var(--ds-primary); margin-bottom:12px;">noise-overlay (Película de Ruído)</h5>
+                <p style="font-size:0.8rem; line-height:1.6; opacity:0.8; margin-bottom:15px;">Filtro de ruído fractal estático injetado no background para quebrar gradientes perfeitos e simular película fotográfica.</p>
+                <div class="ds-code-container">
+                  <pre class="ds-code-block">.noise-overlay {
+  position: fixed; inset: 0;
+  pointer-events: none; z-index: 9000;
+  opacity: 0.05; background-image: url(...);
+}</pre>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </div> <!-- End ds-container -->
+
+  <!-- FOOTER -->
+  <footer class="footer" style="margin-top: 100px;">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <h4>AURA x AETHEREAL</h4>
+          <p>Documentação oficial do ecossistema de design unificado.<br/>Versão 1.0.0 — Maio 2026</p>
+        </div>
+        <div class="footer-col">
+          <h4>Seções</h4>
+          <a href="#hero-dobra">Hero</a>
+          <a href="#typography">Tipografia</a>
+          <a href="#colors">Cores</a>
+          <a href="#components">Componentes</a>
+        </div>
+        <div class="footer-col">
+          <h4>Códigos</h4>
+          <a href="../templates/luxury-desert-retreat-1.aura.build/design-system.html">Sirocco Riad</a>
+          <a href="../templates/parallax-clean/design-system.html">Aethereal Brutalist</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2026 Aura Design. Desenvolvido para a plataforma Impermundo.</p>
+      </div>
+    </div>
+  </footer>
+
+
+  <!-- ==========================================================================
+       JAVASCRIPT DYNAMIC INTERACTIONS (Vanilla JS)
+       ========================================================================== -->
+  <script>
+    // === ESTRELAS CINTILANTES: Gerador dinâmico na Hero ===
+    (function generateStars() {
+      const starContainer = document.getElementById('stars-canvas');
+      if (!starContainer) return;
+      const count = 90;
+      const fragment = document.createDocumentFragment();
+      for (let i = 0; i < count; i++) {
+        const star = document.createElement('div');
+        star.className = 'star';
+        const left = Math.random() * 100;
+        const top = Math.random() * 100;
+        const duration = 2 + Math.random() * 4;
+        const delay = Math.random() * 3;
+        const size = 1 + Math.random() * 2;
+        star.style.cssText = `
+          left: ${left}%;
+          top: ${top}%;
+          --dur: ${duration}s;
+          --del: ${delay}s;
+          width: ${size}px;
+          height: ${size}px;
+        `;
+        fragment.appendChild(star);
+      }
+      starContainer.appendChild(fragment);
+    })();
+
+    // === INTERACTIVE THEME TOGGLER ===
+    const themeBtn = document.getElementById('theme-toggle');
+    const themeIcon = document.getElementById('theme-icon');
+    const body = document.body;
+
+    themeBtn.addEventListener('click', () => {
+      body.classList.toggle('light-theme');
+      if (body.classList.contains('light-theme')) {
+        themeIcon.setAttribute('icon', 'lucide:sun');
+        // Alterar variáveis dinâmicas de exibição para a demonstração
+        themeBtn.title = "Ativar Modo Escuro";
+      } else {
+        themeIcon.setAttribute('icon', 'lucide:moon');
+        themeBtn.title = "Ativar Modo Claro";
+      }
+    });
+
+    // === INTERACTION: MODAL OPEN / CLOSE ===
+    const triggerModalBtn = document.getElementById('trigger-modal-btn');
+    const demoModal = document.getElementById('demo-modal');
+    const closeModal = document.getElementById('close-modal');
+
+    triggerModalBtn.addEventListener('click', () => {
+      demoModal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    });
+
+    closeModal.addEventListener('click', () => {
+      demoModal.classList.remove('active');
+      document.body.style.overflow = '';
+    });
+
+    demoModal.addEventListener('click', (e) => {
+      if (e.target === demoModal) {
+        demoModal.classList.remove('active');
+        document.body.style.overflow = '';
+      }
+    });
+
+    // === COPY TO CLIPBOARD HELPER ===
+    const toast = document.getElementById('toast-notice');
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add('active');
+      setTimeout(() => {
+        toast.classList.remove('active');
+      }, 2000);
+    }
+
+    window.copyClass = function(className) {
+      navigator.clipboard.writeText(className).then(() => {
+        showToast(`Classe "${className}" copiada com sucesso!`);
+      });
+    };
+
+    window.copyIconTag = function(iconName) {
+      const tag = `<iconify-icon icon="${iconName}"></iconify-icon>`;
+      navigator.clipboard.writeText(tag).then(() => {
+        showToast(`Tag do ícone "${iconName}" copiada!`);
+      });
+    };
+
+    // === DYNAMIC MOUSE RADIAL GLOW FOR SHOWCASE CARDS ===
+    document.querySelectorAll('.glow-track').forEach(card => {
+      card.addEventListener('mousemove', e => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        card.style.setProperty('--mouse-x', `${x}px`);
+        card.style.setProperty('--mouse-y', `${y}px`);
+      });
+    });
+
+    // === MOBILE NAVBAR TOGGLE ===
+    const navToggle = document.getElementById('nav-toggle-ds');
+    const mobileOverlay = document.getElementById('mobileOverlayDS');
+    
+    if (navToggle && mobileOverlay) {
+      navToggle.addEventListener('click', () => {
+        navToggle.classList.toggle('active');
+        mobileOverlay.classList.toggle('active');
+      });
+
+      mobileOverlay.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+          navToggle.classList.remove('active');
+          mobileOverlay.classList.remove('active');
+        });
+      });
+    }
+
+    // === GSAP ANIMATIONS AND INTERSECTION OBSERVER FOR TRANSITIONS ===
+    // Setup ScrollTrigger
+    gsap.registerPlugin(ScrollTrigger);
+
+    // Initial load fade in for Hero elements
+    window.addEventListener('DOMContentLoaded', () => {
+      // Reveal observer
+      const revealElements = document.querySelectorAll('.reveal, .reveal-left, .stagger-up');
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            io.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.15, rootMargin: '0px 0px -5% 0px' });
+      
+      revealElements.forEach(el => io.observe(el));
+
+      // Word Splitting Animation logic
+      function splitWords(element) {
+        const text = element.innerText;
+        const words = text.split(' ');
+        element.innerHTML = '';
+        words.forEach(word => {
+          const wrap = document.createElement('span');
+          wrap.style.cssText = 'display: inline-block; overflow: hidden; vertical-align: top; padding-bottom: 0.1em;';
+          wrap.innerHTML = `<span class="inner-word-anim" style="display: inline-block; transform: translateY(110%); transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);">${word}&nbsp;</span>`;
+          element.appendChild(wrap);
+        });
+      }
+
+      document.querySelectorAll('.split-animate').forEach(el => {
+        splitWords(el);
+        // Animate on hover or scroll
+        const innerWords = el.querySelectorAll('.inner-word-anim');
+        const triggerAnim = () => {
+          gsap.to(innerWords, {
+            y: '0%',
+            stagger: 0.05,
+            duration: 0.8,
+            ease: 'power3.out'
+          });
+        };
+
+        // ScrollTrigger to trigger split text anim
+        ScrollTrigger.create({
+          trigger: el,
+          start: 'top 85%',
+          onEnter: triggerAnim,
+          once: true
+        });
+      });
+
+      // Subtle Hero parallax scroll
+      const heroBg = document.querySelector('.hero-bg');
+      if (heroBg) {
+        window.addEventListener('scroll', () => {
+          const y = window.scrollY;
+          if (y < window.innerHeight) {
+            heroBg.style.transform = `translateY(${y * 0.28}px) scale(1.1)`;
+          }
+        }, { passive: true });
+      }
+    });
+
+  </script>
+</body>
+</html>
