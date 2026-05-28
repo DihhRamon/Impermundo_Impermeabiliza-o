@@ -971,7 +971,6 @@
       right: 0;
       z-index: 2;
       width: 55%;
-      aspect-ratio: 4 / 3;
       border: 6px solid var(--color-bg);
       overflow: hidden;
       box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
@@ -979,8 +978,8 @@
 
     .about-img-overlap {
       width: 100%;
-      height: 100%;
-      object-fit: cover;
+      height: auto;
+      display: block;
       filter: saturate(0.85) contrast(1.1);
       transition: transform 1.5s var(--ease-out);
     }
@@ -1808,7 +1807,7 @@
               loading="lazy" />
           </div>
           <div class="about-img-overlap-wrapper">
-            <img class="about-img-overlap" src="assets/raw_files/imagem2.png" alt="Detalhe da impermeabilização"
+            <img class="about-img-overlap" src="assets/raw_files/imagem3.png" alt="Detalhe da impermeabilização"
               loading="lazy" />
           </div>
         </div>
