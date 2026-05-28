@@ -1,0 +1,2572 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>Design System | Impermundo</title>
+  <meta name="description" content="Design System oficial — tipografia, cores, componentes, animações e ícones."/>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+
+  <!-- Iconify -->
+  <script src="templates/barbershop-landing-51.aura.build/assets/iconify_654a1ef798a3.js"></script>
+
+  <style>
+    /* =========================================================
+       DESIGN TOKENS
+    ========================================================= */
+    :root {
+      /* — Colors — */
+      --color-bg:          #0d0d0d;
+      --color-surface:     #141414;
+      --color-surface-2:   #1a1a1a;
+      --color-surface-3:   #242424;
+      --color-border:      rgba(255,255,255,0.08);
+      --color-border-mid:  rgba(255,255,255,0.14);
+
+      --color-primary:     #c8a96e;
+      --color-primary-rgb: 200, 169, 110;
+      --color-primary-dim: rgba(200,169,110,0.12);
+      --color-primary-glow:rgba(200,169,110,0.35);
+      --color-primary-light:#e5cfa4;
+
+      --color-accent:      #b87333;
+      --color-accent-rgb:  184, 115, 51;
+
+      --color-text:        #f0ece4;
+      --color-text-muted:  rgba(240,236,228,0.55);
+      --color-text-faint:  rgba(240,236,228,0.28);
+
+      --color-white:       #ffffff;
+      --color-black:       #000000;
+
+      /* — Typography — */
+      --font-display:  'Playfair Display', Georgia, serif;
+      --font-sans:     'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono:     'Space Mono', 'Courier New', monospace;
+
+      /* — Scale — */
+      --text-xs:    0.6875rem;   /* 11px */
+      --text-sm:    0.8125rem;   /* 13px */
+      --text-base:  1rem;        /* 16px */
+      --text-lg:    1.125rem;    /* 18px */
+      --text-xl:    1.375rem;    /* 22px */
+      --text-2xl:   1.75rem;     /* 28px */
+      --text-3xl:   2.25rem;     /* 36px */
+      --text-4xl:   3rem;        /* 48px */
+      --text-5xl:   4rem;        /* 64px */
+      --text-6xl:   5.5rem;      /* 88px */
+      --text-hero:  8vw;
+
+      /* — Spacing — */
+      --space-1:  4px;
+      --space-2:  8px;
+      --space-3:  12px;
+      --space-4:  16px;
+      --space-6:  24px;
+      --space-8:  32px;
+      --space-12: 48px;
+      --space-16: 64px;
+      --space-24: 96px;
+      --space-32: 128px;
+
+      /* — Radius — */
+      --radius-sm:  4px;
+      --radius-md:  8px;
+      --radius-lg:  16px;
+      --radius-full:9999px;
+
+      /* — Transitions — */
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+      --duration-fast:  200ms;
+      --duration-base:  400ms;
+      --duration-slow:  800ms;
+      --duration-x-slow:1200ms;
+    }
+
+    /* =========================================================
+       RESET & BASE
+    ========================================================= */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; }
+    body {
+      font-family: var(--font-sans);
+      background-color: var(--color-bg);
+      color: var(--color-text);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    a { color: inherit; text-decoration: none; }
+    img, svg { display: block; max-width: 100%; }
+    button { cursor: pointer; border: none; background: none; font-family: inherit; }
+    ::selection { background: var(--color-primary); color: var(--color-black); }
+
+    /* =========================================================
+       SCROLL ANIMATIONS
+    ========================================================= */
+    /* .reveal — base scroll-triggered fade+slide */
+    .reveal {
+      opacity: 0;
+      transform: translateY(2rem);
+      transition: opacity var(--duration-slow) var(--ease-out),
+                  transform var(--duration-slow) var(--ease-out);
+    }
+    .reveal.active { opacity: 1; transform: translateY(0); }
+
+    /* Stagger delays */
+    .reveal-delay-1 { transition-delay: 0.12s; }
+    .reveal-delay-2 { transition-delay: 0.24s; }
+    .reveal-delay-3 { transition-delay: 0.36s; }
+    .reveal-delay-4 { transition-delay: 0.48s; }
+    .reveal-delay-5 { transition-delay: 0.6s; }
+
+    /* .text-reveal — masked clip-reveal for headings */
+    .text-reveal-wrapper {
+      overflow: hidden;
+      display: inline-block;
+      vertical-align: bottom;
+    }
+    .text-reveal-content {
+      display: block;
+      transform: translateY(110%);
+      opacity: 0;
+      transition:
+        transform var(--duration-x-slow) var(--ease-out),
+        opacity var(--duration-x-slow) ease;
+    }
+    .reveal-active .text-reveal-content { transform: translateY(0); opacity: 1; }
+    .delay-100 { transition-delay: 0.1s; }
+    .delay-200 { transition-delay: 0.2s; }
+    .delay-300 { transition-delay: 0.3s; }
+    .delay-500 { transition-delay: 0.5s; }
+    .delay-700 { transition-delay: 0.7s; }
+
+    /* Fade up (lighter variant) */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(1.5rem);
+      transition: opacity 0.9s var(--ease-out), transform 0.9s var(--ease-out);
+    }
+    .fade-up.active { opacity: 1; transform: translateY(0); }
+
+    /* Nav load */
+    .nav-load {
+      opacity: 0;
+      transform: translateY(-12px);
+      transition: all 0.8s var(--ease-out);
+    }
+    .nav-load.loaded { opacity: 1; transform: translateY(0); }
+
+    /* =========================================================
+       MARQUEE (from barbershop + digital-architect)
+    ========================================================= */
+    @keyframes marqueeScroll {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+    .marquee-track {
+      display: flex;
+      width: max-content;
+      animation: marqueeScroll 28s linear infinite;
+    }
+    .marquee-track:hover { animation-play-state: paused; }
+    .marquee-section {
+      overflow: hidden;
+      user-select: none;
+      mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
+    }
+    .marquee-item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-6);
+      padding-right: var(--space-6);
+      white-space: nowrap;
+    }
+    .marquee-item span {
+      font-family: var(--font-sans);
+      font-size: var(--text-xs);
+      font-weight: 600;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--color-text-muted);
+    }
+    .marquee-dot {
+      width: 4px; height: 4px;
+      border-radius: 50%;
+      background: var(--color-primary);
+      flex-shrink: 0;
+    }
+
+    /* =========================================================
+       BACKGROUND PARTICLES / ANIMATED GRID
+    ========================================================= */
+    .bg-grid {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 64px 64px;
+      pointer-events: none;
+    }
+    .bg-noise {
+      position: absolute; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      opacity: 0.5;
+    }
+
+    /* Animated glowing orb */
+    @keyframes orbFloat {
+      0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.25; }
+      50%       { transform: translate(-50%, -52%) scale(1.08); opacity: 0.35; }
+    }
+    .glow-orb {
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+      animation: orbFloat 8s ease-in-out infinite;
+      filter: blur(80px);
+    }
+    .glow-orb-gold {
+      width: 700px; height: 700px;
+      background: radial-gradient(circle, rgba(200,169,110,0.28) 0%, transparent 70%);
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+    }
+    @keyframes orbFloat2 {
+      0%, 100% { transform: translate(0,0) scale(1); }
+      50%       { transform: translate(-20px, -30px) scale(1.05); }
+    }
+    .glow-orb-2 {
+      animation: orbFloat2 12s ease-in-out infinite;
+      filter: blur(100px);
+    }
+
+    /* =========================================================
+       SECTION SKELETON
+    ========================================================= */
+    .ds-section {
+      position: relative;
+      overflow: hidden;
+      padding: var(--space-24) clamp(24px, 6vw, 96px);
+    }
+    .ds-section + .ds-section {
+      border-top: 1px solid var(--color-border);
+    }
+    .ds-section__label {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      margin-bottom: var(--space-12);
+    }
+    .ds-section__label-line {
+      flex: 1;
+      max-width: 40px;
+      height: 1px;
+      background: var(--color-primary);
+    }
+    .ds-section__label-text {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      font-weight: 700;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--color-primary);
+    }
+    .ds-section__number {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      font-weight: 400;
+      color: var(--color-text-faint);
+      letter-spacing: 0.25em;
+      display: block;
+      margin-bottom: var(--space-2);
+    }
+    .ds-section__title {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 4vw, 3.5rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1;
+      color: var(--color-text);
+      margin-bottom: var(--space-16);
+    }
+    .ds-divider {
+      height: 1px;
+      background: var(--color-border);
+      margin: var(--space-16) 0;
+    }
+
+    /* =========================================================
+       NAV
+    ========================================================= */
+    .nav {
+      position: sticky; top: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 clamp(24px, 5vw, 80px);
+      height: 68px;
+      background: rgba(13,13,13,0.88);
+      backdrop-filter: blur(20px) saturate(1.6);
+      border-bottom: 1px solid var(--color-border);
+      transition: background 0.3s ease;
+    }
+    .nav-logo {
+      font-family: var(--font-sans);
+      font-size: var(--text-sm);
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--color-text);
+    }
+    .logo-ampersand { color: var(--color-primary); }
+    .nav-links {
+      display: flex; gap: var(--space-8); list-style: none;
+    }
+    .nav-links a {
+      font-size: var(--text-xs);
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--color-text-muted);
+      transition: color var(--duration-fast) ease;
+      position: relative;
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute; bottom: -4px; left: 50%; right: 50%;
+      height: 2px;
+      background: var(--color-primary);
+      transition: left var(--duration-base) var(--ease-out),
+                  right var(--duration-base) var(--ease-out);
+    }
+    .nav-links a:hover { color: var(--color-text); }
+    .nav-links a:hover::after { left: 0; right: 0; }
+    .nav-cta {
+      font-size: var(--text-xs);
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      padding: 10px 22px;
+      background: var(--color-primary);
+      color: var(--color-black);
+      border: 1px solid transparent;
+      position: relative;
+      overflow: hidden;
+      transition: color var(--duration-fast) ease, border-color var(--duration-fast) ease;
+    }
+    .nav-cta::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: var(--color-black);
+      transform: translateY(100%);
+      transition: transform var(--duration-base) var(--ease-out);
+    }
+    .nav-cta span { position: relative; z-index: 1; }
+    .nav-cta:hover { color: var(--color-primary); border-color: var(--color-primary); }
+    .nav-cta:hover::before { transform: translateY(0); }
+
+    /* =========================================================
+       HERO (SECTION 0 — FIRST FOLD)
+    ========================================================= */
+    .hero {
+      position: relative;
+      min-height: 100svh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      overflow: hidden;
+      background: var(--color-bg);
+    }
+    .hero-bg {
+      position: absolute; inset: 0;
+      pointer-events: none; z-index: 0;
+    }
+    /* Animated gradient mesh */
+    @keyframes meshMove {
+      0%, 100% { background-position: 0% 50%; }
+      50%       { background-position: 100% 50%; }
+    }
+    .hero-mesh {
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 30% 60%, rgba(200,169,110,0.13) 0%, transparent 60%),
+                  radial-gradient(ellipse 60% 50% at 80% 20%, rgba(184,115,51,0.09) 0%, transparent 60%),
+                  var(--color-bg);
+      animation: meshMove 12s ease-in-out infinite;
+      background-size: 200% 200%;
+    }
+    /* Scan line effect */
+    @keyframes scanLine {
+      from { transform: translateY(-100%); }
+      to   { transform: translateY(100vh); }
+    }
+    .hero-scan {
+      position: absolute; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, rgba(200,169,110,0.4), transparent);
+      animation: scanLine 6s linear infinite;
+      pointer-events: none;
+    }
+
+    .hero-content {
+      position: relative; z-index: 2;
+      display: flex; flex-direction: column;
+      justify-content: center;
+      padding: clamp(40px, 6vw, 80px) clamp(24px, 5vw, 80px);
+      padding-top: 120px;
+    }
+    .hero-tag {
+      display: flex; align-items: center; gap: var(--space-3);
+      margin-bottom: var(--space-8);
+    }
+    .hero-tag-line {
+      width: 36px; height: 1px;
+      background: var(--color-primary);
+      display: block;
+    }
+    .hero-tag-text {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--color-primary);
+    }
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: clamp(3.5rem, 7vw, 7.5rem);
+      font-weight: 900;
+      line-height: 0.9;
+      letter-spacing: -0.03em;
+      color: var(--color-text);
+      display: flex; flex-direction: column;
+      margin-bottom: var(--space-8);
+    }
+    .title-stroke {
+      -webkit-text-stroke: 1.5px rgba(200,169,110,0.7);
+      color: transparent;
+      font-style: italic;
+    }
+    .title-gold { color: var(--color-primary); }
+
+    .hero-desc {
+      font-size: var(--text-base);
+      line-height: 1.7;
+      color: var(--color-text-muted);
+      max-width: 44ch;
+      margin-bottom: var(--space-12);
+    }
+    .hero-actions {
+      display: flex; gap: var(--space-4); flex-wrap: wrap;
+    }
+
+    /* Hero image column */
+    .hero-visual {
+      position: relative; z-index: 2;
+      overflow: hidden;
+    }
+    .hero-visual img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      object-position: center top;
+      filter: saturate(0.85) contrast(1.05);
+      transition: transform 12s ease-out;
+    }
+    .hero-visual:hover img { transform: scale(1.04); }
+    .hero-visual-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to right, var(--color-bg) 0%, transparent 30%),
+                  linear-gradient(to top, var(--color-bg) 0%, transparent 40%);
+    }
+    /* Floating badge */
+    .hero-badge {
+      position: absolute;
+      bottom: var(--space-8);
+      left: var(--space-8);
+      padding: var(--space-3) var(--space-6);
+      background: rgba(200,169,110,0.12);
+      border: 1px solid rgba(200,169,110,0.35);
+      backdrop-filter: blur(12px);
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--color-primary);
+      display: flex; align-items: center; gap: var(--space-2);
+    }
+    .hero-badge-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--color-primary);
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.7); }
+    }
+
+    /* Stats bar */
+    .hero-stats {
+      display: grid; grid-template-columns: repeat(3,1fr);
+      border-top: 1px solid var(--color-border);
+      margin-top: var(--space-12);
+    }
+    .hero-stat {
+      padding: var(--space-6) 0 var(--space-3);
+      border-right: 1px solid var(--color-border);
+    }
+    .hero-stat:last-child { border-right: none; }
+    .stat-number {
+      font-family: var(--font-display);
+      font-size: var(--text-3xl);
+      font-weight: 700;
+      color: var(--color-primary);
+      line-height: 1;
+    }
+    .stat-label {
+      font-size: var(--text-xs);
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--color-text-faint);
+      margin-top: var(--space-1);
+    }
+
+    /* =========================================================
+       BUTTONS
+    ========================================================= */
+    /* Primary */
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: var(--space-3);
+      padding: 14px 28px;
+      background: var(--color-primary);
+      color: var(--color-black);
+      font-family: var(--font-sans);
+      font-size: var(--text-xs);
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      position: relative; overflow: hidden;
+      transition: color var(--duration-base) ease, box-shadow var(--duration-base) ease;
+    }
+    .btn-primary::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: #000;
+      transform: translateX(-100%) skewX(-12deg);
+      transition: transform var(--duration-base) var(--ease-out);
+    }
+    .btn-primary:hover { color: var(--color-primary); box-shadow: 0 0 28px var(--color-primary-glow); }
+    .btn-primary:hover::before { transform: translateX(0) skewX(-12deg); }
+    .btn-primary span, .btn-primary svg { position: relative; z-index: 1; }
+    .btn-primary svg { transition: transform var(--duration-base) var(--ease-out); }
+    .btn-primary:hover svg { transform: translateX(4px); }
+
+    /* Outline */
+    .btn-outline {
+      display: inline-flex; align-items: center; gap: var(--space-3);
+      padding: 14px 28px;
+      background: transparent;
+      color: var(--color-text);
+      font-family: var(--font-sans);
+      font-size: var(--text-xs);
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      border: 1px solid var(--color-border-mid);
+      position: relative; overflow: hidden;
+      transition: color var(--duration-base) ease,
+                  border-color var(--duration-base) ease;
+    }
+    .btn-outline::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: rgba(200,169,110,0.08);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform var(--duration-base) var(--ease-out);
+    }
+    .btn-outline:hover { color: var(--color-primary); border-color: var(--color-primary); }
+    .btn-outline:hover::before { transform: scaleX(1); }
+    .btn-outline span, .btn-outline svg { position: relative; z-index: 1; }
+    .btn-outline svg { transition: transform var(--duration-base) ease; }
+    .btn-outline:hover svg { transform: translateX(4px); }
+
+    /* Ghost / Text */
+    .btn-ghost {
+      display: inline-flex; align-items: center; gap: var(--space-2);
+      font-size: var(--text-xs);
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--color-text-muted);
+      border-bottom: 1px solid transparent;
+      padding-bottom: 2px;
+      transition: color var(--duration-fast) ease,
+                  border-color var(--duration-fast) ease;
+    }
+    .btn-ghost:hover { color: var(--color-primary); border-color: var(--color-primary); }
+
+    /* Submit/CTA */
+    .btn-submit {
+      display: inline-flex; align-items: center; gap: var(--space-3);
+      width: 100%;
+      justify-content: center;
+      padding: 16px 32px;
+      background: var(--color-primary);
+      color: var(--color-black);
+      font-family: var(--font-sans);
+      font-size: var(--text-xs);
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      border: none;
+      position: relative; overflow: hidden;
+      cursor: pointer;
+      transition: box-shadow var(--duration-base) ease;
+    }
+    .btn-submit::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: rgba(0,0,0,0.15);
+      transform: translateY(100%);
+      transition: transform var(--duration-base) var(--ease-out);
+    }
+    .btn-submit:hover { box-shadow: 0 0 40px rgba(200,169,110,0.5), 0 0 80px rgba(200,169,110,0.2); }
+    .btn-submit:hover::after { transform: translateY(0); }
+    .btn-submit span, .btn-submit svg { position: relative; z-index: 1; }
+
+    /* =========================================================
+       INPUTS
+    ========================================================= */
+    .form-group {
+      display: flex; flex-direction: column; gap: var(--space-2);
+    }
+    .form-label {
+      font-size: var(--text-xs);
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--color-text-muted);
+    }
+    .form-input, .form-select {
+      width: 100%;
+      padding: 14px 16px;
+      background: var(--color-surface-2);
+      border: 1px solid var(--color-border);
+      color: var(--color-text);
+      font-family: var(--font-sans);
+      font-size: var(--text-sm);
+      outline: none;
+      transition: border-color var(--duration-fast) ease,
+                  box-shadow var(--duration-fast) ease,
+                  background var(--duration-fast) ease;
+    }
+    .form-input::placeholder { color: var(--color-text-faint); }
+    .form-input:focus, .form-select:focus {
+      border-color: var(--color-primary);
+      background: var(--color-surface-3);
+      box-shadow: 0 0 0 3px rgba(200,169,110,0.12),
+                  0 0 20px rgba(200,169,110,0.08);
+    }
+    .form-select { appearance: none; cursor: pointer; }
+    .form-select option { background: var(--color-surface-2); }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); }
+
+    /* =========================================================
+       CARDS
+    ========================================================= */
+    /* Service card (barbershop style) */
+    .service-card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      padding: var(--space-8);
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      transition: border-color var(--duration-base) ease,
+                  background var(--duration-base) ease,
+                  box-shadow var(--duration-base) ease;
+    }
+    .service-card::before {
+      content: '';
+      position: absolute; left: 0; top: 0; bottom: 0;
+      width: 3px;
+      background: var(--color-primary);
+      transform: scaleY(0);
+      transform-origin: bottom;
+      transition: transform var(--duration-base) var(--ease-out);
+    }
+    .service-card::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 80% 50% at 50% 100%, rgba(200,169,110,0.08) 0%, transparent 70%);
+      opacity: 0;
+      transition: opacity var(--duration-base) ease;
+    }
+    .service-card:hover {
+      border-color: rgba(200,169,110,0.3);
+      background: var(--color-surface-2);
+      box-shadow: 0 8px 40px rgba(200,169,110,0.1);
+    }
+    .service-card:hover::before { transform: scaleY(1); }
+    .service-card:hover::after { opacity: 1; }
+    .service-icon {
+      font-size: 2rem;
+      color: var(--color-primary);
+      margin-bottom: var(--space-6);
+      display: block;
+      position: relative; z-index: 1;
+      transition: transform var(--duration-base) var(--ease-out);
+    }
+    .service-card:hover .service-icon { transform: scale(1.12) rotate(-6deg); }
+    .service-arrow {
+      position: absolute; top: var(--space-6); right: var(--space-6);
+      font-size: 1.25rem;
+      color: var(--color-text-faint);
+      opacity: 0; transform: translate(-4px, 4px);
+      transition: all var(--duration-base) var(--ease-out);
+      z-index: 1;
+    }
+    .service-card:hover .service-arrow { opacity: 1; transform: translate(0,0); }
+    .service-name {
+      font-family: var(--font-sans);
+      font-size: var(--text-xs);
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--color-text);
+      margin-bottom: var(--space-3);
+      position: relative; z-index: 1;
+    }
+    .service-desc {
+      font-size: var(--text-sm);
+      line-height: 1.65;
+      color: var(--color-text-muted);
+      margin-bottom: var(--space-6);
+      position: relative; z-index: 1;
+    }
+    .service-price-row {
+      display: flex; align-items: baseline; justify-content: space-between;
+      padding-top: var(--space-4);
+      border-top: 1px solid var(--color-border);
+      position: relative; z-index: 1;
+    }
+    .service-price {
+      font-family: var(--font-display);
+      font-size: var(--text-xl);
+      font-weight: 700;
+      color: var(--color-primary);
+    }
+    .service-duration {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      color: var(--color-text-faint);
+      letter-spacing: 0.15em;
+    }
+
+    /* Team card */
+    .team-card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      overflow: hidden;
+      transition: border-color var(--duration-base) ease,
+                  box-shadow var(--duration-base) ease;
+    }
+    .team-card:hover {
+      border-color: rgba(200,169,110,0.25);
+      box-shadow: 0 16px 48px rgba(0,0,0,0.4);
+    }
+    .team-card-img {
+      aspect-ratio: 3/4;
+      overflow: hidden;
+      position: relative;
+    }
+    .team-card-img img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      transition: transform 0.8s var(--ease-out), filter 0.5s ease;
+      filter: grayscale(30%);
+    }
+    .team-card:hover .team-card-img img {
+      transform: scale(1.06);
+      filter: grayscale(0%);
+    }
+    .team-card-img-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 50%);
+    }
+    .team-card-info {
+      padding: var(--space-6);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .team-card-name {
+      font-size: var(--text-xs);
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+    .team-card-role {
+      font-size: var(--text-xs);
+      color: var(--color-primary);
+      margin-top: var(--space-1);
+      font-weight: 500;
+      letter-spacing: 0.1em;
+    }
+    .team-card-socials a {
+      font-size: 1.25rem;
+      color: var(--color-text-faint);
+      transition: color var(--duration-fast) ease;
+    }
+    .team-card-socials a:hover { color: var(--color-primary); }
+
+    /* Project / Portfolio card (digital-architect style) */
+    .project-card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      overflow: hidden;
+      cursor: pointer;
+      transition: background var(--duration-base) ease,
+                  border-color var(--duration-base) ease;
+    }
+    .project-card:hover {
+      background: var(--color-surface-2);
+      border-color: rgba(200,169,110,0.2);
+    }
+    .project-card-inner {
+      display: grid; grid-template-columns: 1fr 1fr; min-height: 220px;
+    }
+    .project-card-text {
+      padding: var(--space-8);
+      display: flex; flex-direction: column; justify-content: center;
+      border-right: 1px solid var(--color-border);
+    }
+    .project-card-meta {
+      display: flex; align-items: center; gap: var(--space-3);
+      margin-bottom: var(--space-4);
+    }
+    .project-card-num {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      color: var(--color-text-faint);
+    }
+    .project-card-divider { height: 1px; width: 24px; background: var(--color-border-mid); }
+    .project-card-cat {
+      font-size: var(--text-xs);
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--color-primary);
+    }
+    .project-card-title {
+      font-family: var(--font-display);
+      font-size: var(--text-2xl);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: var(--space-3);
+      transition: transform var(--duration-slow) var(--ease-out);
+    }
+    .project-card:hover .project-card-title { transform: translateX(6px); }
+    .project-card-desc {
+      font-size: var(--text-sm);
+      line-height: 1.65;
+      color: var(--color-text-muted);
+    }
+    .project-card-image {
+      position: relative; overflow: hidden;
+    }
+    .project-card-image img {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+      filter: grayscale(60%) contrast(1.05);
+      transition: all 0.8s var(--ease-out);
+    }
+    .project-card:hover .project-card-image img {
+      transform: scale(1.06);
+      filter: grayscale(0%);
+    }
+
+    /* Testimonial card */
+    .testimonial-card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      padding: var(--space-8);
+      position: relative; overflow: hidden;
+    }
+    .testimonial-card::before {
+      content: '"';
+      position: absolute; top: -20px; left: var(--space-6);
+      font-family: var(--font-display);
+      font-size: 8rem;
+      font-weight: 700;
+      color: rgba(200,169,110,0.08);
+      line-height: 1;
+      pointer-events: none;
+    }
+    .testimonial-stars {
+      display: flex; gap: 4px; margin-bottom: var(--space-4);
+      color: var(--color-primary);
+      font-size: 0.9rem;
+    }
+    .testimonial-quote {
+      font-size: var(--text-base);
+      line-height: 1.7;
+      color: var(--color-text-muted);
+      font-style: italic;
+      margin-bottom: var(--space-6);
+      position: relative; z-index: 1;
+    }
+    .testimonial-author-name {
+      font-size: var(--text-xs);
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--color-text);
+    }
+    .testimonial-author-title {
+      font-size: var(--text-xs);
+      color: var(--color-primary);
+      margin-top: var(--space-1);
+      font-family: var(--font-mono);
+    }
+
+    /* =========================================================
+       NAVBAR (design-system navigation)
+    ========================================================= */
+    .ds-nav {
+      position: sticky; top: 68px; z-index: 90;
+      background: rgba(20,20,20,0.95);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--color-border);
+      overflow-x: auto;
+    }
+    .ds-nav-inner {
+      display: flex; align-items: center;
+      padding: 0 clamp(24px, 5vw, 80px);
+      gap: var(--space-1);
+      min-width: max-content;
+    }
+    .ds-nav-item {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--color-text-faint);
+      padding: 14px var(--space-4);
+      border-bottom: 2px solid transparent;
+      transition: color var(--duration-fast) ease, border-color var(--duration-fast) ease;
+      white-space: nowrap;
+    }
+    .ds-nav-item:hover { color: var(--color-text); border-bottom-color: var(--color-primary); }
+    .ds-nav-item.active { color: var(--color-primary); border-bottom-color: var(--color-primary); }
+
+    /* =========================================================
+       BADGES & TOOLTIPS
+    ========================================================= */
+    .badge {
+      display: inline-flex; align-items: center; gap: var(--space-2);
+      padding: 4px 12px;
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+    .badge-primary { background: var(--color-primary); color: var(--color-black); }
+    .badge-outline {
+      background: transparent;
+      border: 1px solid var(--color-primary);
+      color: var(--color-primary);
+    }
+    .badge-glass {
+      background: rgba(200,169,110,0.12);
+      border: 1px solid rgba(200,169,110,0.3);
+      color: var(--color-primary);
+      backdrop-filter: blur(8px);
+    }
+    .badge-dark {
+      background: var(--color-surface-3);
+      border: 1px solid var(--color-border);
+      color: var(--color-text-muted);
+    }
+    .badge-success {
+      background: rgba(74,222,128,0.12);
+      border: 1px solid rgba(74,222,128,0.3);
+      color: #4ade80;
+    }
+    .badge-neutral {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: var(--color-text-muted);
+    }
+
+    /* Tooltip */
+    .tooltip-wrapper {
+      position: relative; display: inline-block;
+    }
+    .tooltip {
+      position: absolute; bottom: calc(100% + 8px);
+      left: 50%; transform: translateX(-50%);
+      padding: var(--space-2) var(--space-4);
+      background: var(--color-surface-3);
+      border: 1px solid var(--color-border-mid);
+      color: var(--color-text);
+      font-size: var(--text-xs);
+      font-family: var(--font-mono);
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity var(--duration-fast) ease, transform var(--duration-fast) ease;
+      transform: translateX(-50%) translateY(4px);
+    }
+    .tooltip::after {
+      content: '';
+      position: absolute; top: 100%; left: 50%;
+      transform: translateX(-50%);
+      border: 5px solid transparent;
+      border-top-color: var(--color-border-mid);
+    }
+    .tooltip-wrapper:hover .tooltip { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    /* Modal */
+    .modal-backdrop {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(8px);
+      z-index: 200;
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none;
+      transition: opacity var(--duration-base) ease;
+    }
+    .modal-backdrop.open { opacity: 1; pointer-events: all; }
+    .modal {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border-mid);
+      width: min(90vw, 520px);
+      padding: var(--space-12);
+      position: relative;
+      transform: translateY(24px) scale(0.97);
+      transition: transform var(--duration-base) var(--ease-out);
+    }
+    .modal-backdrop.open .modal { transform: translateY(0) scale(1); }
+    .modal-close {
+      position: absolute; top: var(--space-6); right: var(--space-6);
+      width: 32px; height: 32px;
+      display: flex; align-items: center; justify-content: center;
+      border: 1px solid var(--color-border);
+      color: var(--color-text-muted);
+      cursor: pointer;
+      transition: color var(--duration-fast) ease, border-color var(--duration-fast) ease;
+    }
+    .modal-close:hover { color: var(--color-text); border-color: var(--color-primary); }
+    .modal-title {
+      font-family: var(--font-display);
+      font-size: var(--text-2xl);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: var(--space-4);
+    }
+    .modal-body { font-size: var(--text-sm); line-height: 1.7; color: var(--color-text-muted); }
+
+    /* =========================================================
+       GRID / LAYOUT HELPERS
+    ========================================================= */
+    .grid-2 { display: grid; grid-template-columns: repeat(2,1fr); gap: var(--space-8); }
+    .grid-3 { display: grid; grid-template-columns: repeat(3,1fr); gap: var(--space-6); }
+    .grid-4 { display: grid; grid-template-columns: repeat(4,1fr); gap: var(--space-4); }
+    .services-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px,1fr)); gap: 1px; background: var(--color-border); }
+    .services-grid .service-card { margin: 0; }
+
+    /* =========================================================
+       SECTION-SPECIFIC BACKGROUNDS
+    ========================================================= */
+    .section-dark { background: var(--color-surface); }
+    .section-darker { background: #0a0a0a; }
+    .section-gold {
+      background: linear-gradient(135deg, rgba(200,169,110,0.06) 0%, transparent 50%),
+                  var(--color-surface);
+    }
+
+    /* Animated border */
+    @keyframes borderRotate {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
+    }
+    .border-animated {
+      position: relative;
+    }
+    .border-animated::before {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      background: conic-gradient(
+        from 0deg,
+        rgba(200,169,110,0) 0%,
+        rgba(200,169,110,0.6) 20%,
+        rgba(200,169,110,0) 40%
+      );
+      border-radius: inherit;
+      animation: borderRotate 4s linear infinite;
+      z-index: -1;
+    }
+    .border-animated::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: inherit;
+      border-radius: inherit;
+      z-index: 0;
+    }
+
+    /* =========================================================
+       SECTION TAGS (barbershop-style)
+    ========================================================= */
+    .section-tag {
+      display: flex; align-items: center; gap: var(--space-3);
+      margin-bottom: var(--space-6);
+    }
+    .section-tag-line {
+      height: 1px; width: 32px;
+      background: var(--color-primary);
+    }
+    .section-tag-text {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      font-weight: 700;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--color-primary);
+    }
+    .section-title {
+      font-family: var(--font-sans);
+      font-size: clamp(2rem, 4.5vw, 3.5rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 0.95;
+      text-transform: uppercase;
+      color: var(--color-text);
+    }
+    .section-title .italic {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-weight: 700;
+      color: var(--color-primary);
+    }
+
+    /* =========================================================
+       GALLERY GRID
+    ========================================================= */
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      grid-template-rows: auto auto;
+      gap: 4px;
+    }
+    .gallery-item {
+      position: relative; overflow: hidden;
+      aspect-ratio: 3/4;
+      cursor: pointer;
+    }
+    .gallery-item:first-child { grid-row: span 2; aspect-ratio: auto; }
+    .gallery-item img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      transition: transform 0.8s var(--ease-out), filter 0.5s ease;
+      filter: saturate(0.7) contrast(1.05);
+    }
+    .gallery-item:hover img { transform: scale(1.06); filter: saturate(1); }
+    .gallery-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 50%);
+      display: flex; align-items: flex-end;
+      padding: var(--space-4);
+      opacity: 0;
+      transition: opacity var(--duration-base) ease;
+    }
+    .gallery-item:hover .gallery-overlay { opacity: 1; }
+    .gallery-overlay-text {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--color-text);
+    }
+
+    /* =========================================================
+       COLOR SWATCHES
+    ========================================================= */
+    .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px,1fr)); gap: var(--space-4); }
+    .swatch {
+      border: 1px solid var(--color-border);
+      overflow: hidden;
+    }
+    .swatch-color { height: 100px; }
+    .swatch-info { padding: var(--space-4); background: var(--color-surface); }
+    .swatch-name { font-size: var(--text-sm); font-weight: 600; margin-bottom: var(--space-1); }
+    .swatch-hex { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--color-text-muted); }
+    .swatch-roles { font-family: var(--font-mono); font-size: 10px; color: var(--color-text-faint); margin-top: 4px; letter-spacing: 0.08em; }
+
+    /* =========================================================
+       TYPOGRAPHY SPECIMENS
+    ========================================================= */
+    .type-row {
+      display: grid; grid-template-columns: 140px 1fr 180px;
+      align-items: baseline;
+      padding: var(--space-8) 0;
+      border-bottom: 1px solid var(--color-border);
+      gap: var(--space-6);
+    }
+    .type-label {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      color: var(--color-text-faint);
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+    .type-spec {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      color: var(--color-text-faint);
+      text-align: right;
+      line-height: 1.8;
+    }
+
+    /* =========================================================
+       ICONS SECTION
+    ========================================================= */
+    .icon-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: var(--space-4); }
+    .icon-item {
+      display: flex; flex-direction: column; align-items: center; gap: var(--space-3);
+      padding: var(--space-6);
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      cursor: pointer;
+      transition: border-color var(--duration-fast) ease,
+                  background var(--duration-fast) ease,
+                  box-shadow var(--duration-fast) ease;
+    }
+    .icon-item:hover {
+      border-color: rgba(200,169,110,0.4);
+      background: var(--color-surface-2);
+      box-shadow: 0 0 16px rgba(200,169,110,0.12);
+    }
+    .icon-item svg {
+      font-size: 1.75rem;
+      color: var(--color-primary);
+      transition: transform var(--duration-base) var(--ease-out);
+    }
+    .icon-item:hover svg { transform: scale(1.2) rotate(-8deg); }
+    .icon-name {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--color-text-faint);
+      text-align: center;
+      letter-spacing: 0.08em;
+    }
+
+    /* =========================================================
+       ANIMATION DEMOS
+    ========================================================= */
+    @keyframes spinSlow { to { transform: rotate(360deg); } }
+    @keyframes bounceIn {
+      0%   { transform: scale(0.3); opacity: 0; }
+      50%  { transform: scale(1.05); }
+      70%  { transform: scale(0.9); }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    @keyframes glowPulse {
+      0%, 100% { box-shadow: 0 0 10px rgba(200,169,110,0.3); }
+      50%       { box-shadow: 0 0 40px rgba(200,169,110,0.7), 0 0 80px rgba(200,169,110,0.3); }
+    }
+    @keyframes slideInLeft {
+      from { transform: translateX(-40px); opacity: 0; }
+      to   { transform: translateX(0); opacity: 1; }
+    }
+    @keyframes zoomIn {
+      from { transform: scale(0.7); opacity: 0; }
+      to   { transform: scale(1); opacity: 1; }
+    }
+    @keyframes shimmer {
+      0%   { background-position: -200% center; }
+      100% { background-position: 200% center; }
+    }
+
+    .anim-demo-card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      padding: var(--space-8);
+      display: flex; flex-direction: column; align-items: center;
+      gap: var(--space-4); text-align: center;
+    }
+    .anim-name {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--color-text-faint);
+    }
+    .anim-box {
+      width: 64px; height: 64px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .anim-box-spin { animation: spinSlow 3s linear infinite; }
+    .anim-box-glow {
+      background: var(--color-primary);
+      width: 48px; height: 48px;
+      animation: glowPulse 2s ease-in-out infinite;
+    }
+    .anim-box-shimmer {
+      width: 100%; height: 16px;
+      background: linear-gradient(90deg, var(--color-surface-3) 25%, rgba(200,169,110,0.3) 50%, var(--color-surface-3) 75%);
+      background-size: 200% auto;
+      animation: shimmer 2s linear infinite;
+    }
+
+    /* Ken Burns */
+    @keyframes kenBurns {
+      from { transform: scale(1) translate(0,0); }
+      to   { transform: scale(1.08) translate(-1%, -1%); }
+    }
+    .ken-burns { animation: kenBurns 12s ease-out infinite alternate; }
+
+    /* =========================================================
+       FOOTER
+    ========================================================= */
+    .footer {
+      background: #080808;
+      border-top: 1px solid var(--color-border);
+      padding: var(--space-16) clamp(24px, 6vw, 96px) var(--space-8);
+    }
+    .footer-top {
+      display: grid; grid-template-columns: 1fr auto auto auto;
+      gap: var(--space-12); padding-bottom: var(--space-12);
+      border-bottom: 1px solid var(--color-border);
+      margin-bottom: var(--space-8);
+      align-items: start;
+    }
+    .footer-brand-name {
+      font-family: var(--font-display);
+      font-size: var(--text-3xl);
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      color: var(--color-text);
+      margin-bottom: var(--space-4);
+    }
+    .footer-brand-desc {
+      font-size: var(--text-sm);
+      line-height: 1.7;
+      color: var(--color-text-muted);
+      max-width: 36ch;
+    }
+    .footer-col-title {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      font-weight: 700;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--color-primary);
+      margin-bottom: var(--space-6);
+    }
+    .footer-links { display: flex; flex-direction: column; gap: var(--space-3); }
+    .footer-links a {
+      font-size: var(--text-sm);
+      color: var(--color-text-muted);
+      transition: color var(--duration-fast) ease;
+    }
+    .footer-links a:hover { color: var(--color-text); }
+    .footer-bottom {
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .footer-copy {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      color: var(--color-text-faint);
+      letter-spacing: 0.1em;
+    }
+    .footer-socials { display: flex; gap: var(--space-4); }
+    .footer-socials a {
+      font-size: 1.25rem;
+      color: var(--color-text-faint);
+      transition: color var(--duration-fast) ease, transform var(--duration-fast) ease;
+    }
+    .footer-socials a:hover { color: var(--color-primary); transform: translateY(-2px); }
+
+    /* =========================================================
+       UTILITY
+    ========================================================= */
+    .container { max-width: 1280px; margin: 0 auto; }
+    .text-gold { color: var(--color-primary); }
+    .text-muted { color: var(--color-text-muted); }
+    .text-faint { color: var(--color-text-faint); }
+    .mono { font-family: var(--font-mono); }
+    .italic { font-style: italic; }
+    .glow { text-shadow: 0 0 24px rgba(200,169,110,0.5); }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .parallax-element { will-change: transform; }
+    .parallax-img { will-change: transform; }
+
+    /* =========================================================
+       RESPONSIVE
+    ========================================================= */
+    @media (max-width: 900px) {
+      .hero { grid-template-columns: 1fr; }
+      .hero-visual { display: none; }
+      .grid-3 { grid-template-columns: 1fr; }
+      .grid-4 { grid-template-columns: repeat(2,1fr); }
+      .form-row { grid-template-columns: 1fr; }
+      .footer-top { grid-template-columns: 1fr; }
+      .type-row { grid-template-columns: 100px 1fr; }
+      .type-spec { display: none; }
+      .gallery-grid { grid-template-columns: repeat(2, 1fr); }
+      .project-card-inner { grid-template-columns: 1fr; }
+      .project-card-image { display: none; }
+    }
+    @media (max-width: 600px) {
+      .hero-stats { grid-template-columns: 1fr; }
+      .grid-2 { grid-template-columns: 1fr; }
+      .ds-section { padding: var(--space-16) var(--space-6); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- =====================================================
+     MAIN NAV
+===================================================== -->
+<nav class="nav nav-load" id="site-nav">
+  <a class="nav-logo" href="#">DESIGN <span class="logo-ampersand">&</span> SYSTEM</a>
+  <ul class="nav-links">
+    <li><a href="#typography">Tipografia</a></li>
+    <li><a href="#colors">Cores</a></li>
+    <li><a href="#components">Componentes</a></li>
+    <li><a href="#icons">Ícones</a></li>
+    <li><a href="#animations">Animações</a></li>
+  </ul>
+  <a class="nav-cta" href="#components"><span>Ver Componentes</span></a>
+</nav>
+
+<!-- DS Internal Nav -->
+<nav class="ds-nav no-scrollbar">
+  <div class="ds-nav-inner">
+    <a class="ds-nav-item active" href="#hero">00 — Hero</a>
+    <a class="ds-nav-item" href="#typography">01 — Tipografia</a>
+    <a class="ds-nav-item" href="#colors">02 — Cores</a>
+    <a class="ds-nav-item" href="#components">03 — Componentes</a>
+    <a class="ds-nav-item" href="#icons">04 — Ícones</a>
+    <a class="ds-nav-item" href="#animations">05 — Animações</a>
+  </div>
+</nav>
+
+<!-- =====================================================
+     00 — HERO (FIRST FOLD — SHOWCASE)
+===================================================== -->
+<section class="hero" id="hero">
+  <!-- Animated backgrounds -->
+  <div class="hero-bg">
+    <div class="hero-mesh"></div>
+    <div class="bg-grid"></div>
+    <div class="bg-noise"></div>
+    <div class="glow-orb glow-orb-gold" style="top:55%;left:38%;"></div>
+    <div class="glow-orb glow-orb-2" style="width:400px;height:400px;background:radial-gradient(circle,rgba(184,115,51,0.2) 0%,transparent 70%);top:20%;left:70%;"></div>
+  </div>
+  <div class="hero-scan"></div>
+
+  <!-- Content -->
+  <div class="hero-content">
+    <div class="hero-tag reveal">
+      <span class="hero-tag-line"></span>
+      <span class="hero-tag-text">Sistema de Design v1.0</span>
+    </div>
+
+    <h1 class="hero-title" id="hero-title">
+      <span class="text-reveal-wrapper"><span class="text-reveal-content delay-200">ONDE O</span></span>
+      <span class="text-reveal-wrapper"><span class="text-reveal-content delay-300"><span class="title-stroke">OFÍCIO</span></span></span>
+      <span class="text-reveal-wrapper"><span class="text-reveal-content delay-500"><span class="title-gold">ENCONTRA</span></span></span>
+      <span class="text-reveal-wrapper"><span class="text-reveal-content delay-700">A ARTE.</span></span>
+    </h1>
+
+    <p class="hero-desc reveal reveal-delay-4">
+      Um sistema de design completo — tipografia, cores, componentes, animações e ícones — projetado para criar experiências digitais premium com elegância e impacto.
+    </p>
+
+    <div class="hero-actions reveal reveal-delay-5">
+      <a class="btn-primary" href="#components">
+        <span>Explorar Componentes</span>
+        <svg aria-hidden="true" class="iconify iconify--solar" data-icon="solar:arrow-right-linear" height="1em" role="img" viewBox="0 0 24 24" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M4 12h16m0 0l-6-6m6 6l-6 6" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/></svg>
+      </a>
+      <a class="btn-outline" href="#typography">
+        <span>Ver Tipografia</span>
+        <svg aria-hidden="true" class="iconify iconify--solar" data-icon="solar:arrow-right-linear" height="1em" role="img" viewBox="0 0 24 24" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M4 12h16m0 0l-6-6m6 6l-6 6" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/></svg>
+      </a>
+    </div>
+
+    <div class="hero-stats">
+      <div class="hero-stat reveal">
+        <div class="stat-number">06</div>
+        <div class="stat-label">Seções</div>
+      </div>
+      <div class="hero-stat reveal reveal-delay-1">
+        <div class="stat-number">40+</div>
+        <div class="stat-label">Componentes</div>
+      </div>
+      <div class="hero-stat reveal reveal-delay-2">
+        <div class="stat-number">∞</div>
+        <div class="stat-label">Possibilidades</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hero visual -->
+  <div class="hero-visual">
+    <img
+      alt="Design system hero — barbearia premium"
+      class="parallax-img ken-burns"
+      data-speed="0.06"
+      src="templates/barbershop-landing-51.aura.build/assets/photo-1621605815971-fbc98d6650_2ef33d15070f.avif"
+      loading="eager"
+    />
+    <div class="hero-visual-overlay"></div>
+    <div class="hero-badge">
+      <span class="hero-badge-dot"></span>
+      Premium Design System
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-section" style="padding: 18px 0; background: var(--color-surface); border-top: 1px solid var(--color-border); border-bottom: 1px solid var(--color-border);">
+  <div class="marquee-track">
+    <div class="marquee-item">
+      <span>Tipografia Premium</span><div class="marquee-dot"></div>
+      <span>Sistema de Cores</span><div class="marquee-dot"></div>
+      <span>Componentes Animados</span><div class="marquee-dot"></div>
+      <span>Ícones Solar</span><div class="marquee-dot"></div>
+      <span>Scroll Reveal</span><div class="marquee-dot"></div>
+      <span>Ken Burns Effect</span><div class="marquee-dot"></div>
+      <span>Glow Animado</span><div class="marquee-dot"></div>
+      <span>Glass Morphism</span><div class="marquee-dot"></div>
+    </div>
+    <div class="marquee-item" aria-hidden="true">
+      <span>Tipografia Premium</span><div class="marquee-dot"></div>
+      <span>Sistema de Cores</span><div class="marquee-dot"></div>
+      <span>Componentes Animados</span><div class="marquee-dot"></div>
+      <span>Ícones Solar</span><div class="marquee-dot"></div>
+      <span>Scroll Reveal</span><div class="marquee-dot"></div>
+      <span>Ken Burns Effect</span><div class="marquee-dot"></div>
+      <span>Glow Animado</span><div class="marquee-dot"></div>
+      <span>Glass Morphism</span><div class="marquee-dot"></div>
+    </div>
+  </div>
+</div>
+
+<!-- =====================================================
+     01 — TYPOGRAPHY
+===================================================== -->
+<section class="ds-section" id="typography" style="background: var(--color-surface);">
+  <div class="bg-grid" style="opacity:0.5;"></div>
+  <div class="glow-orb" style="width:400px;height:400px;background:radial-gradient(circle,rgba(200,169,110,0.08) 0%,transparent 70%);top:50%;left:80%;position:absolute;"></div>
+  <div style="position:relative;z-index:1;">
+    <span class="ds-section__number">01 / Fundamentos</span>
+    <div class="ds-section__label reveal">
+      <span class="ds-section__label-line"></span>
+      <span class="ds-section__label-text">Tipografia</span>
+    </div>
+    <h2 class="ds-section__title reveal reveal-delay-1" id="hero-title-typo">
+      <span class="text-reveal-wrapper"><span class="text-reveal-content">ESCALA</span></span>
+      <span class="text-reveal-wrapper"><span class="text-reveal-content delay-200"><em style="font-family:var(--font-display);color:var(--color-primary);">Tipográfica</em></span></span>
+    </h2>
+
+    <!-- Font families -->
+    <div class="grid-3 reveal reveal-delay-1" style="margin-bottom: var(--space-12);">
+      <div class="anim-demo-card" style="align-items:flex-start;gap:var(--space-3);">
+        <span class="badge badge-dark">Display</span>
+        <p style="font-family:var(--font-display);font-size:var(--text-2xl);font-weight:700;letter-spacing:-0.02em;line-height:1;">Playfair Display</p>
+        <p class="type-label">Serif · 700 / 900 · Headings e títulos</p>
+        <p style="font-family:var(--font-mono);font-size:var(--text-xs);color:var(--color-text-faint);margin-top:4px;">CDN: fonts.googleapis.com</p>
+      </div>
+      <div class="anim-demo-card" style="align-items:flex-start;gap:var(--space-3);">
+        <span class="badge badge-dark">Sans</span>
+        <p style="font-family:var(--font-sans);font-size:var(--text-2xl);font-weight:600;letter-spacing:-0.01em;line-height:1;">Inter</p>
+        <p class="type-label">Sans-serif · 300–700 · Corpo e UI</p>
+        <p style="font-family:var(--font-mono);font-size:var(--text-xs);color:var(--color-text-faint);margin-top:4px;">CDN: fonts.googleapis.com</p>
+      </div>
+      <div class="anim-demo-card" style="align-items:flex-start;gap:var(--space-3);">
+        <span class="badge badge-dark">Mono</span>
+        <p style="font-family:var(--font-mono);font-size:var(--text-2xl);font-weight:400;line-height:1;">Space Mono</p>
+        <p class="type-label">Monospace · 400 / 700 · Labels e código</p>
+        <p style="font-family:var(--font-mono);font-size:var(--text-xs);color:var(--color-text-faint);margin-top:4px;">CDN: fonts.googleapis.com</p>
+      </div>
+    </div>
+
+    <!-- Type scale -->
+    <div class="reveal reveal-delay-2">
+      <div class="type-row">
+        <span class="type-label">h1 / display</span>
+        <h1 style="font-family:var(--font-display);font-size:clamp(3rem,7vw,7.5rem);font-weight:900;letter-spacing:-0.03em;line-height:0.9;">Digital Architect</h1>
+        <span class="type-spec">clamp(3rem,7vw,7.5rem)<br/>weight: 900<br/>leading: 0.9<br/>spacing: -0.03em</span>
+      </div>
+      <div class="type-row">
+        <span class="type-label">h2 / section</span>
+        <h2 style="font-family:var(--font-sans);font-size:clamp(2rem,4.5vw,3.5rem);font-weight:700;letter-spacing:-0.03em;line-height:0.95;text-transform:uppercase;">NOSSA HISTÓRIA</h2>
+        <span class="type-spec">clamp(2rem,4.5vw,3.5rem)<br/>weight: 700<br/>leading: 0.95<br/>uppercase</span>
+      </div>
+      <div class="type-row">
+        <span class="type-label">h3 / card title</span>
+        <h3 style="font-family:var(--font-sans);font-size:var(--text-2xl);font-weight:700;letter-spacing:-0.02em;">Corte Exclusivo</h3>
+        <span class="type-spec">1.75rem (28px)<br/>weight: 700<br/>spacing: -0.02em</span>
+      </div>
+      <div class="type-row">
+        <span class="type-label">h4 / label heading</span>
+        <h4 style="font-family:var(--font-sans);font-size:var(--text-xs);font-weight:700;letter-spacing:0.2em;text-transform:uppercase;">SERVIÇOS PREMIUM</h4>
+        <span class="type-spec">0.6875rem (11px)<br/>weight: 700<br/>spacing: 0.2em · uppercase</span>
+      </div>
+      <div class="type-row">
+        <span class="type-label">body-lg</span>
+        <p style="font-size:var(--text-lg);line-height:1.7;color:var(--color-text-muted);max-width:60ch;">Entre num mundo onde cada corte conta uma história. Nossos mestres combinam técnicas tradicionais com arte contemporânea.</p>
+        <span class="type-spec">1.125rem (18px)<br/>leading: 1.7<br/>muted color</span>
+      </div>
+      <div class="type-row">
+        <span class="type-label">body</span>
+        <p style="font-size:var(--text-base);line-height:1.65;color:var(--color-text-muted);max-width:60ch;">Desde as toalhas quentes até a última passada de talco, cada visita é coreografada à perfeição.</p>
+        <span class="type-spec">1rem (16px)<br/>leading: 1.65<br/>muted color</span>
+      </div>
+      <div class="type-row">
+        <span class="type-label">body-sm</span>
+        <p style="font-size:var(--text-sm);line-height:1.65;color:var(--color-text-muted);">Texto auxiliar para descrições de componentes e metadados.</p>
+        <span class="type-spec">0.8125rem (13px)<br/>leading: 1.65</span>
+      </div>
+      <div class="type-row">
+        <span class="type-label">caption / mono</span>
+        <span style="font-family:var(--font-mono);font-size:var(--text-xs);letter-spacing:0.22em;text-transform:uppercase;color:var(--color-text-faint);">Fundada em 2018 — Cuidado Premium</span>
+        <span class="type-spec">0.6875rem (11px)<br/>Space Mono · uppercase<br/>spacing: 0.22em</span>
+      </div>
+      <!-- Display italic -->
+      <div class="type-row" style="border:none;">
+        <span class="type-label">display italic</span>
+        <p style="font-family:var(--font-display);font-style:italic;font-size:var(--text-5xl);font-weight:700;color:var(--color-primary);letter-spacing:-0.02em;">Legado.</p>
+        <span class="type-spec">4rem (64px)<br/>Playfair · italic<br/>weight: 700 · gold</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =====================================================
+     02 — COLORS
+===================================================== -->
+<section class="ds-section" id="colors" style="background: var(--color-bg);">
+  <div class="bg-grid" style="opacity:0.4;"></div>
+  <div style="position:relative;z-index:1;">
+    <span class="ds-section__number">02 / Fundamentos</span>
+    <div class="ds-section__label reveal">
+      <span class="ds-section__label-line"></span>
+      <span class="ds-section__label-text">Sistema de Cores</span>
+    </div>
+    <h2 class="ds-section__title reveal reveal-delay-1">
+      <span class="text-reveal-wrapper"><span class="text-reveal-content">PALETA</span></span>
+      <br>
+      <span class="text-reveal-wrapper"><span class="text-reveal-content delay-200"><em style="font-family:var(--font-display);color:var(--color-primary);">Cromática</em></span></span>
+    </h2>
+
+    <div class="color-grid reveal reveal-delay-2">
+      <!-- Primary -->
+      <div class="swatch">
+        <div class="swatch-color" style="background:#c8a96e;"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Primary Gold</div>
+          <div class="swatch-hex">#C8A96E · rgb(200,169,110)</div>
+          <div class="swatch-hex">hsl(38°, 45%, 61%)</div>
+          <div class="swatch-roles">CTA · Acento · Destaque · Ativo</div>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#b87333;"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Accent Copper</div>
+          <div class="swatch-hex">#B87333 · rgb(184,115,51)</div>
+          <div class="swatch-hex">hsl(30°, 56%, 46%)</div>
+          <div class="swatch-roles">Gradientes · Hover · Decorativo</div>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#e5cfa4;"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Gold Light</div>
+          <div class="swatch-hex">#E5CFA4 · rgb(229,207,164)</div>
+          <div class="swatch-hex">hsl(38°, 58%, 77%)</div>
+          <div class="swatch-roles">Texto claro · Contraste · Disabled</div>
+        </div>
+      </div>
+      <!-- Neutrals -->
+      <div class="swatch">
+        <div class="swatch-color" style="background:#0d0d0d;border:1px solid rgba(255,255,255,0.08);"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Background</div>
+          <div class="swatch-hex">#0D0D0D · rgb(13,13,13)</div>
+          <div class="swatch-hex">hsl(0°, 0%, 5%)</div>
+          <div class="swatch-roles">Fundo principal · Canvas</div>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#141414;"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Surface</div>
+          <div class="swatch-hex">#141414 · rgb(20,20,20)</div>
+          <div class="swatch-hex">hsl(0°, 0%, 8%)</div>
+          <div class="swatch-roles">Cards · Navs · Superfícies</div>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#1a1a1a;"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Surface 2</div>
+          <div class="swatch-hex">#1A1A1A · rgb(26,26,26)</div>
+          <div class="swatch-hex">hsl(0°, 0%, 10%)</div>
+          <div class="swatch-roles">Hover cards · Inputs · Elevação</div>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#242424;"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Surface 3</div>
+          <div class="swatch-hex">#242424 · rgb(36,36,36)</div>
+          <div class="swatch-hex">hsl(0°, 0%, 14%)</div>
+          <div class="swatch-roles">Input focus · Badges dark</div>
+        </div>
+      </div>
+      <!-- Text -->
+      <div class="swatch">
+        <div class="swatch-color" style="background:#f0ece4;"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Text</div>
+          <div class="swatch-hex">#F0ECE4 · rgb(240,236,228)</div>
+          <div class="swatch-hex">hsl(37°, 38%, 92%)</div>
+          <div class="swatch-roles">Texto principal · Headings · AA</div>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:rgba(240,236,228,0.55);"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Text Muted</div>
+          <div class="swatch-hex">rgba(240,236,228, 0.55)</div>
+          <div class="swatch-roles">Parágrafos · Descrições · AA</div>
+        </div>
+      </div>
+      <!-- Feedback -->
+      <div class="swatch">
+        <div class="swatch-color" style="background:rgba(74,222,128,0.25);border:1px solid rgba(74,222,128,0.4);"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Feedback Success</div>
+          <div class="swatch-hex">rgba(74,222,128, .25)</div>
+          <div class="swatch-roles">Sucesso · Confirmação · Badge</div>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:rgba(251,191,36,0.25);border:1px solid rgba(251,191,36,0.4);"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Feedback Warning</div>
+          <div class="swatch-hex">rgba(251,191,36, .25)</div>
+          <div class="swatch-roles">Aviso · Atenção · Pendente</div>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:rgba(248,113,113,0.25);border:1px solid rgba(248,113,113,0.4);"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Feedback Error</div>
+          <div class="swatch-hex">rgba(248,113,113, .25)</div>
+          <div class="swatch-roles">Erro · Destrutivo · Negação</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Gradients -->
+    <div class="ds-divider reveal"></div>
+    <h3 class="reveal" style="font-family:var(--font-mono);font-size:var(--text-xs);letter-spacing:0.25em;text-transform:uppercase;color:var(--color-text-faint);margin-bottom:var(--space-6);">Gradientes do Sistema</h3>
+    <div class="grid-3 reveal reveal-delay-1">
+      <div class="swatch">
+        <div class="swatch-color" style="background:linear-gradient(135deg,#c8a96e,#b87333);"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Gold Linear</div>
+          <div class="swatch-hex">135° · Primary → Accent</div>
+          <div class="swatch-roles">CTAs · Botões principais</div>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:radial-gradient(ellipse at 40% 50%,rgba(200,169,110,0.35),transparent 70%),#0d0d0d;"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Glow Radial</div>
+          <div class="swatch-hex">radial · Gold glow · Dark bg</div>
+          <div class="swatch-roles">Hero bg · Section bg decorativo</div>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:linear-gradient(to top,#0d0d0d 0%,transparent 50%),url('templates/barbershop-landing-51.aura.build/assets/photo-1503951914875-452162b0f3_6a26d7b8dbf9.avif') center/cover;"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Image Overlay</div>
+          <div class="swatch-hex">Gradient to top · Dark</div>
+          <div class="swatch-roles">Galeria · Cards de imagem</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =====================================================
+     03 — COMPONENTS
+===================================================== -->
+<section class="ds-section section-dark" id="components">
+  <div class="bg-grid" style="opacity:0.35;"></div>
+  <div class="glow-orb" style="width:500px;height:500px;background:radial-gradient(circle,rgba(200,169,110,0.07) 0%,transparent 70%);top:30%;left:10%;position:absolute;"></div>
+  <div style="position:relative;z-index:1;">
+    <span class="ds-section__number">03 / Componentes UI</span>
+    <div class="ds-section__label reveal">
+      <span class="ds-section__label-line"></span>
+      <span class="ds-section__label-text">Componentes</span>
+    </div>
+    <h2 class="ds-section__title reveal reveal-delay-1">
+      <span class="text-reveal-wrapper"><span class="text-reveal-content">BIBLIOTECA</span></span>
+      <br>
+      <span class="text-reveal-wrapper"><span class="text-reveal-content delay-200"><em style="font-family:var(--font-display);color:var(--color-primary);">de Componentes</em></span></span>
+    </h2>
+
+    <!-- === BUTTONS === -->
+    <div class="ds-divider"></div>
+    <h3 class="reveal" style="font-family:var(--font-mono);font-size:var(--text-xs);letter-spacing:0.25em;text-transform:uppercase;color:var(--color-primary);margin-bottom:var(--space-8);">Botões & Ações</h3>
+    <div style="display:flex;flex-wrap:wrap;gap:var(--space-6);align-items:center;margin-bottom:var(--space-12);" class="reveal reveal-delay-1">
+      <div style="display:flex;flex-direction:column;align-items:flex-start;gap:var(--space-3);">
+        <a class="btn-primary" href="#">
+          <span>Primário</span>
+          <svg aria-hidden="true" class="iconify iconify--solar" data-icon="solar:arrow-right-linear" height="1em" viewBox="0 0 24 24" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M4 12h16m0 0l-6-6m6 6l-6 6" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/></svg>
+        </a>
+        <span class="mono text-faint" style="font-size:10px;">.btn-primary</span>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-start;gap:var(--space-3);">
+        <a class="btn-outline" href="#">
+          <span>Outline</span>
+          <svg aria-hidden="true" class="iconify iconify--solar" data-icon="solar:arrow-right-linear" height="1em" viewBox="0 0 24 24" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M4 12h16m0 0l-6-6m6 6l-6 6" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/></svg>
+        </a>
+        <span class="mono text-faint" style="font-size:10px;">.btn-outline</span>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-start;gap:var(--space-3);">
+        <a class="btn-ghost" href="#">
+          Ghost →
+        </a>
+        <span class="mono text-faint" style="font-size:10px;">.btn-ghost</span>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-start;gap:var(--space-3);">
+        <button class="btn-submit" style="width:auto;">
+          <span>Submit</span>
+          <svg aria-hidden="true" class="iconify iconify--solar" data-icon="solar:arrow-right-linear" height="1em" viewBox="0 0 24 24" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M4 12h16m0 0l-6-6m6 6l-6 6" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/></svg>
+        </button>
+        <span class="mono text-faint" style="font-size:10px;">.btn-submit</span>
+      </div>
+    </div>
+
+    <!-- === BADGES === -->
+    <h3 class="reveal" style="font-family:var(--font-mono);font-size:var(--text-xs);letter-spacing:0.25em;text-transform:uppercase;color:var(--color-primary);margin-bottom:var(--space-6);">Badges</h3>
+    <div style="display:flex;flex-wrap:wrap;gap:var(--space-3);margin-bottom:var(--space-12);" class="reveal reveal-delay-1">
+      <span class="badge badge-primary">Primary</span>
+      <span class="badge badge-outline">Outline</span>
+      <span class="badge badge-glass">Glass</span>
+      <span class="badge badge-dark">Dark</span>
+      <span class="badge badge-success">✓ Sucesso</span>
+      <span class="badge badge-neutral">Neutro</span>
+      <div class="tooltip-wrapper">
+        <span class="badge badge-primary" style="cursor:pointer;">Hover Me</span>
+        <div class="tooltip">Tooltip com info extra!</div>
+      </div>
+    </div>
+
+    <!-- === SERVICE CARDS === -->
+    <h3 class="reveal" style="font-family:var(--font-mono);font-size:var(--text-xs);letter-spacing:0.25em;text-transform:uppercase;color:var(--color-primary);margin-bottom:var(--space-6);">Service Cards</h3>
+    <div class="services-grid reveal reveal-delay-1" style="margin-bottom:var(--space-12);">
+      <div class="service-card reveal">
+        <svg aria-hidden="true" class="iconify service-icon iconify--solar" data-icon="solar:scissors-bold" height="1em" role="img" viewBox="0 0 24 24" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M6.654 1.633a.75.75 0 0 0-1.308.735l5.794 10.304l-2.708 4.815a3.751 3.751 0 1 0-.136 3.303L12 14.202l3.704 6.588a3.75 3.75 0 1 0-.136-3.303l-2.708-4.815l5.794-10.304a.75.75 0 0 0-1.308-.735L12 11.142z" fill="currentColor"/></svg>
+        <svg aria-hidden="true" class="iconify service-arrow iconify--solar" data-icon="solar:arrow-right-up-linear" height="1em" viewBox="0 0 24 24" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M6 18L18 6m0 0H9m9 0v9" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/></svg>
+        <h3 class="service-name">Corte Exclusivo</h3>
+        <p class="service-desc">Experiência de corte sob medida com consulta, toalha quente e estilização precisa.</p>
+        <div class="service-price-row"><span class="service-price">R$ 45</span><span class="service-duration">45 Min</span></div>
+      </div>
+      <div class="service-card reveal reveal-delay-1">
+        <svg aria-hidden="true" class="iconify service-icon iconify--solar" data-icon="solar:fire-bold" height="1em" role="img" viewBox="0 0 24 24" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M12.832 21.801c3.126-.626 7.168-2.875 7.168-8.69c0-5.291-3.873-8.815-6.658-10.434c-.619-.36-1.342.113-1.342.828v1.828c0 1.442-.606 4.074-2.29 5.169c-.86.559-1.79-.278-1.894-1.298l-.086-.838c-.1-.974-1.092-1.565-1.87-.971C4.461 8.46 3 10.33 3 13.11C3 20.221 8.289 22 10.933 22q.232 0 .484-.015C10.111 21.874 8 21.064 8 18.444c0-2.05 1.495-3.435 2.631-4.11c.306-.18.663.055.663.41v.59c0 .45.175 1.155.59 1.637c.47.546 1.159-.026 1.214-.744c.018-.226.246-.37.442-.256c.641.375 1.46 1.175 1.46 2.473c0 2.048-1.129 2.99-2.168 3.357" fill="currentColor"/></svg>
+        <svg aria-hidden="true" class="iconify service-arrow iconify--solar" data-icon="solar:arrow-right-up-linear" height="1em" viewBox="0 0 24 24" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M6 18L18 6m0 0H9m9 0v9" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/></svg>
+        <h3 class="service-name">Barbear Premium</h3>
+        <p class="service-desc">Barbear tradicional na navalha com toalha quente, espuma premium e bálsamo pós-barba.</p>
+        <div class="service-price-row"><span class="service-price">R$ 55</span><span class="service-duration">50 Min</span></div>
+      </div>
+      <div class="service-card reveal reveal-delay-2">
+        <svg aria-hidden="true" class="iconify service-icon iconify--solar" data-icon="solar:crown-bold" height="1em" role="img" viewBox="0 0 24 24" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="m20.092 14.326l.193-1.894c.103-1.011.17-1.678.117-2.099h.02c.871 0 1.578-.746 1.578-1.666S21.293 7 20.421 7s-1.579.746-1.579 1.667c0 .416.145.797.384 1.089c-.343.223-.792.695-1.468 1.405c-.52.547-.78.82-1.07.863a.84.84 0 0 1-.473-.07c-.268-.124-.447-.462-.804-1.139L13.527 7.25c-.22-.417-.405-.766-.572-1.047c.683-.368 1.15-1.117 1.15-1.98C14.105 2.994 13.163 2 12 2s-2.105.995-2.105 2.222c0 .864.467 1.613 1.15 1.98c-.167.282-.351.631-.572 1.048L8.59 10.816c-.358.676-.537 1.014-.805 1.139a.84.84 0 0 1-.473.07c-.29-.043-.55-.317-1.07-.864c-.676-.71-1.125-1.182-1.468-1.405c.24-.292.384-.673.384-1.09C5.158 7.747 4.45 7 3.578 7C2.708 7 2 7.746 2 8.667c0 .92.707 1.666 1.579 1.666h.019c-.054.42.014 1.088.117 2.099l.193 1.894c.107 1.051.196 2.051.306 2.952h15.572c.11-.9.199-1.901.306-2.952M10.855 22h2.29c2.985 0 4.478 0 5.474-.94c.434-.412.71-1.152.908-2.116H4.473c.198.964.473 1.704.908 2.115C6.377 22 7.87 22 10.855 22" fill="currentColor"/></svg>
+        <svg aria-hidden="true" class="iconify service-arrow iconify--solar" data-icon="solar:arrow-right-up-linear" height="1em" viewBox="0 0 24 24" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M6 18L18 6m0 0H9m9 0v9" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/></svg>
+        <h3 class="service-name">Modelagem de Barba</h3>
+        <p class="service-desc">Modelagem, aparo e condicionamento com óleos e bálsamos premium para o perfil perfeito.</p>
+        <div class="service-price-row"><span class="service-price">R$ 35</span><span class="service-duration">30 Min</span></div>
+      </div>
+      <div class="service-card reveal reveal-delay-3">
+        <svg aria-hidden="true" class="iconify service-icon iconify--solar" data-icon="solar:star-bold" height="1em" role="img" viewBox="0 0 24 24" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M9.153 5.408C10.42 3.136 11.053 2 12 2s1.58 1.136 2.847 3.408l.328.588c.36.646.54.969.82 1.182s.63.292 1.33.45l.636.144c2.46.557 3.689.835 3.982 1.776c.292.94-.546 1.921-2.223 3.882l-.434.507c-.476.557-.715.836-.822 1.18c-.107.345-.071.717.001 1.46l.066.677c.253 2.617.38 3.925-.386 4.506s-1.918.051-4.22-1.009l-.597-.274c-.654-.302-.981-.452-1.328-.452s-.674.15-1.328.452l-.596.274c-2.303 1.06-3.455 1.59-4.22 1.01c-.767-.582-.64-1.89-.387-4.507l.066-.676c.072-.744.108-1.116 0-1.46c-.106-.345-.345-.624-.821-1.18l-.434-.508c-1.677-1.96-2.515-2.941-2.223-3.882S3.58 8.328 6.04 7.772l.636-.144c.699-.158 1.048-.237 1.329-.45s.46-.536.82-1.182z" fill="currentColor"/></svg>
+        <svg aria-hidden="true" class="iconify service-arrow iconify--solar" data-icon="solar:arrow-right-up-linear" height="1em" viewBox="0 0 24 24" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M6 18L18 6m0 0H9m9 0v9" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/></svg>
+        <h3 class="service-name">O Real — Full Experience</h3>
+        <p class="service-desc">Pacote completo: corte, barbear, cuidado da barba, tratamento facial e massagem.</p>
+        <div class="service-price-row"><span class="service-price">R$ 95</span><span class="service-duration">90 Min</span></div>
+      </div>
+    </div>
+
+    <!-- === INPUTS === -->
+    <h3 class="reveal" style="font-family:var(--font-mono);font-size:var(--text-xs);letter-spacing:0.25em;text-transform:uppercase;color:var(--color-primary);margin-bottom:var(--space-6);">Inputs & Formulários</h3>
+    <div class="reveal reveal-delay-1" style="max-width:640px;margin-bottom:var(--space-12);">
+      <div class="form-row" style="margin-bottom:var(--space-4);">
+        <div class="form-group">
+          <label class="form-label">Nome</label>
+          <input class="form-input" placeholder="João" type="text"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Sobrenome</label>
+          <input class="form-input" placeholder="Silva" type="text"/>
+        </div>
+      </div>
+      <div class="form-group" style="margin-bottom:var(--space-4);">
+        <label class="form-label">E-mail</label>
+        <input class="form-input" placeholder="joao@email.com" type="email"/>
+      </div>
+      <div class="form-group" style="margin-bottom:var(--space-4);">
+        <label class="form-label">Selecionar Serviço</label>
+        <select class="form-input form-select">
+          <option value="">Escolha um serviço...</option>
+          <option>Corte Exclusivo — R$ 45</option>
+          <option>Barbear Premium — R$ 55</option>
+          <option>O Real — R$ 95</option>
+        </select>
+      </div>
+      <button class="btn-submit" type="button">
+        <span>Confirmar Agendamento</span>
+        <svg aria-hidden="true" class="iconify iconify--solar" data-icon="solar:arrow-right-linear" height="1em" viewBox="0 0 24 24" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M4 12h16m0 0l-6-6m6 6l-6 6" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/></svg>
+      </button>
+    </div>
+
+    <!-- === PROJECT CARDS (Digital Architect style) === -->
+    <h3 class="reveal" style="font-family:var(--font-mono);font-size:var(--text-xs);letter-spacing:0.25em;text-transform:uppercase;color:var(--color-primary);margin-bottom:var(--space-6);">Project Cards</h3>
+    <div style="display:flex;flex-direction:column;gap:4px;margin-bottom:var(--space-12);">
+      <div class="project-card reveal">
+        <div class="project-card-inner">
+          <div class="project-card-text">
+            <div class="project-card-meta">
+              <span class="project-card-num">01</span>
+              <div class="project-card-divider"></div>
+              <span class="project-card-cat">Barbearia</span>
+            </div>
+            <h4 class="project-card-title">Blade & Co.</h4>
+            <p class="project-card-desc">Redesign completo para uma barbearia premium com sistema de agendamento integrado e identidade visual forte.</p>
+          </div>
+          <div class="project-card-image">
+            <img src="templates/barbershop-landing-51.aura.build/assets/photo-1503951914875-452162b0f3_6a26d7b8dbf9.avif" alt="Projeto Blade & Co."/>
+          </div>
+        </div>
+      </div>
+      <div class="project-card reveal reveal-delay-1">
+        <div class="project-card-inner">
+          <div class="project-card-text">
+            <div class="project-card-meta">
+              <span class="project-card-num">02</span>
+              <div class="project-card-divider"></div>
+              <span class="project-card-cat">Identidade Visual</span>
+            </div>
+            <h4 class="project-card-title">Galeria Premium</h4>
+            <p class="project-card-desc">Sistema de galeria modular com efeitos de paralaxe e transições cinematográficas para portfolios de alto impacto.</p>
+          </div>
+          <div class="project-card-image">
+            <img src="templates/barbershop-landing-51.aura.build/assets/photo-1633681926022-84c23e8cb2_d17fc64bbeff.avif" alt="Projeto Galeria"/>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- === TEAM CARDS === -->
+    <h3 class="reveal" style="font-family:var(--font-mono);font-size:var(--text-xs);letter-spacing:0.25em;text-transform:uppercase;color:var(--color-primary);margin-bottom:var(--space-6);">Team Cards</h3>
+    <div class="grid-3 reveal reveal-delay-1" style="margin-bottom:var(--space-12);">
+      <div class="team-card reveal">
+        <div class="team-card-img">
+          <img alt="James Rivera" src="templates/barbershop-landing-51.aura.build/assets/photo-1557862921-37829c790f19_09279be69e29.jpg"/>
+          <div class="team-card-img-overlay"></div>
+        </div>
+        <div class="team-card-info">
+          <div>
+            <div class="team-card-name">JAMES RIVERA</div>
+            <div class="team-card-role">Fundador & Barbeiro Chefe</div>
+          </div>
+          <div class="team-card-socials">
+            <a href="#">
+              <svg aria-hidden="true" class="iconify iconify--solar" data-icon="solar:chat-round-dots-bold" height="1em" viewBox="0 0 24 24" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2S2 6.477 2 12c0 1.6.376 3.112 1.043 4.453c.178.356.237.763.134 1.148l-.595 2.226a1.3 1.3 0 0 0 1.591 1.592l2.226-.596a1.63 1.63 0 0 1 1.149.133A9.96 9.96 0 0 0 12 22" fill="currentColor"/></svg>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="team-card reveal reveal-delay-1">
+        <div class="team-card-img">
+          <img alt="Marcus Chen" src="templates/barbershop-landing-51.aura.build/assets/photo-1597116648852-75764ecaf6_76921d88f400.jpg"/>
+          <div class="team-card-img-overlay"></div>
+        </div>
+        <div class="team-card-info">
+          <div>
+            <div class="team-card-name">MARCUS CHEN</div>
+            <div class="team-card-role">Estilista Sênior</div>
+          </div>
+          <div class="team-card-socials">
+            <a href="#">
+              <svg aria-hidden="true" class="iconify iconify--solar" data-icon="solar:chat-round-dots-bold" height="1em" viewBox="0 0 24 24" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2S2 6.477 2 12c0 1.6.376 3.112 1.043 4.453c.178.356.237.763.134 1.148l-.595 2.226a1.3 1.3 0 0 0 1.591 1.592l2.226-.596a1.63 1.63 0 0 1 1.149.133A9.96 9.96 0 0 0 12 22" fill="currentColor"/></svg>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="team-card reveal reveal-delay-2">
+        <div class="team-card-img">
+          <img alt="David Okafor" src="templates/barbershop-landing-51.aura.build/assets/photo-1600180758890-6b94519a8b_04e812884c97.jpg"/>
+          <div class="team-card-img-overlay"></div>
+        </div>
+        <div class="team-card-info">
+          <div>
+            <div class="team-card-name">DAVID OKAFOR</div>
+            <div class="team-card-role">Especialista em Barba</div>
+          </div>
+          <div class="team-card-socials">
+            <a href="#">
+              <svg aria-hidden="true" class="iconify iconify--solar" data-icon="solar:chat-round-dots-bold" height="1em" viewBox="0 0 24 24" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2S2 6.477 2 12c0 1.6.376 3.112 1.043 4.453c.178.356.237.763.134 1.148l-.595 2.226a1.3 1.3 0 0 0 1.591 1.592l2.226-.596a1.63 1.63 0 0 1 1.149.133A9.96 9.96 0 0 0 12 22" fill="currentColor"/></svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- === TESTIMONIALS === -->
+    <h3 class="reveal" style="font-family:var(--font-mono);font-size:var(--text-xs);letter-spacing:0.25em;text-transform:uppercase;color:var(--color-primary);margin-bottom:var(--space-6);">Testimonial Cards</h3>
+    <div class="grid-3 reveal reveal-delay-1" style="margin-bottom:var(--space-12);">
+      <div class="testimonial-card reveal">
+        <div class="testimonial-stars">★★★★★</div>
+        <p class="testimonial-quote">"A Blade & Co. não é apenas uma barbearia — é uma experiência. Desde o momento em que você entra, sente a atenção aos detalhes."</p>
+        <div class="testimonial-author-name">MICHAEL THORNTON</div>
+        <div class="testimonial-author-title">Cliente desde 2019</div>
+      </div>
+      <div class="testimonial-card reveal reveal-delay-1">
+        <div class="testimonial-stars">★★★★★</div>
+        <p class="testimonial-quote">"O pacote Real vale cada centavo. Barbear com toalha quente, o degradê perfeito e uma massagem no couro cabeludo que dissolve seu estresse."</p>
+        <div class="testimonial-author-name">ROBERT CASTELLANO</div>
+        <div class="testimonial-author-title">Cliente desde 2020</div>
+      </div>
+      <div class="testimonial-card reveal reveal-delay-2">
+        <div class="testimonial-stars">★★★★★</div>
+        <p class="testimonial-quote">"Já fui a barbearias pelo mundo todo e a Blade & Co. está entre as melhores. Marcus modelou minha barba como uma obra de arte."</p>
+        <div class="testimonial-author-name">ALEXANDER HUNT</div>
+        <div class="testimonial-author-title">Cliente desde 2021</div>
+      </div>
+    </div>
+
+    <!-- === GALLERY === -->
+    <h3 class="reveal" style="font-family:var(--font-mono);font-size:var(--text-xs);letter-spacing:0.25em;text-transform:uppercase;color:var(--color-primary);margin-bottom:var(--space-6);">Gallery Grid</h3>
+    <div class="gallery-grid reveal reveal-delay-1" style="margin-bottom:var(--space-12);">
+      <div class="gallery-item">
+        <img alt="Barbearia interior" src="templates/barbershop-landing-51.aura.build/assets/photo-1633681926022-84c23e8cb2_d17fc64bbeff.avif"/>
+        <div class="gallery-overlay"><span class="gallery-overlay-text">A EXPERIÊNCIA</span></div>
+      </div>
+      <div class="gallery-item">
+        <img alt="Degradê clássico" src="templates/barbershop-landing-51.aura.build/assets/photo-1622286342621-4bd786c244_49252f554553.avif"/>
+        <div class="gallery-overlay"><span class="gallery-overlay-text">DEGRADÊ DE PRECISÃO</span></div>
+      </div>
+      <div class="gallery-item">
+        <img alt="Cuidado da barba" src="templates/barbershop-landing-51.aura.build/assets/photo-1605497788044-5a32c70784_266f9d369e98.avif"/>
+        <div class="gallery-overlay"><span class="gallery-overlay-text">ARTE DA BARBA</span></div>
+      </div>
+      <div class="gallery-item">
+        <img alt="Barbear toalha quente" src="templates/barbershop-landing-51.aura.build/assets/photo-1570172619644-dfd03ed5d8_53294f066c06.avif"/>
+        <div class="gallery-overlay"><span class="gallery-overlay-text">RITUAL QUENTE</span></div>
+      </div>
+      <div class="gallery-item">
+        <img alt="Detalhes finais" src="templates/barbershop-landing-51.aura.build/assets/photo-1493256338651-d82f7acb2b_8c40485c6ec9.avif"/>
+        <div class="gallery-overlay"><span class="gallery-overlay-text">TOQUES FINAIS</span></div>
+      </div>
+    </div>
+
+    <!-- === MODAL === -->
+    <h3 class="reveal" style="font-family:var(--font-mono);font-size:var(--text-xs);letter-spacing:0.25em;text-transform:uppercase;color:var(--color-primary);margin-bottom:var(--space-6);">Modal</h3>
+    <div class="reveal reveal-delay-1" style="margin-bottom:var(--space-12);">
+      <button class="btn-primary" id="open-modal">
+        <span>Abrir Modal</span>
+        <svg aria-hidden="true" class="iconify iconify--solar" data-icon="solar:arrow-right-linear" height="1em" viewBox="0 0 24 24" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M4 12h16m0 0l-6-6m6 6l-6 6" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/></svg>
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- Modal (outside section for proper z-index) -->
+<div class="modal-backdrop" id="modal-backdrop">
+  <div class="modal">
+    <button class="modal-close" id="close-modal">
+      <svg aria-hidden="true" class="iconify iconify--solar" data-icon="solar:close-linear" height="1em" viewBox="0 0 24 24" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M18 6L6 18M6 6l12 12" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"/></svg>
+    </button>
+    <span class="badge badge-glass" style="margin-bottom:var(--space-4);display:inline-block;">Modal Component</span>
+    <h3 class="modal-title">Componente de Modal</h3>
+    <p class="modal-body">Este modal usa backdrop blur, animação de entrada suavizada e fechamento por clique no backdrop ou no botão. Totalmente customizável e acessível.</p>
+    <div style="margin-top:var(--space-8);display:flex;gap:var(--space-4);">
+      <button class="btn-primary" id="close-modal-2"><span>Confirmar</span></button>
+      <button class="btn-outline" id="close-modal-3"><span>Cancelar</span></button>
+    </div>
+  </div>
+</div>
+
+<!-- Marquee between sections -->
+<div class="marquee-section" style="padding: 14px 0; background: rgba(200,169,110,0.06); border-top:1px solid var(--color-border); border-bottom:1px solid var(--color-border);">
+  <div class="marquee-track" style="animation-duration:36s;animation-direction:reverse;">
+    <div class="marquee-item">
+      <span>Buttons</span><div class="marquee-dot"></div>
+      <span>Inputs</span><div class="marquee-dot"></div>
+      <span>Cards</span><div class="marquee-dot"></div>
+      <span>Navbars</span><div class="marquee-dot"></div>
+      <span>Modals</span><div class="marquee-dot"></div>
+      <span>Badges</span><div class="marquee-dot"></div>
+      <span>Tooltips</span><div class="marquee-dot"></div>
+      <span>Gallery</span><div class="marquee-dot"></div>
+      <span>Testimonials</span><div class="marquee-dot"></div>
+    </div>
+    <div class="marquee-item" aria-hidden="true">
+      <span>Buttons</span><div class="marquee-dot"></div>
+      <span>Inputs</span><div class="marquee-dot"></div>
+      <span>Cards</span><div class="marquee-dot"></div>
+      <span>Navbars</span><div class="marquee-dot"></div>
+      <span>Modals</span><div class="marquee-dot"></div>
+      <span>Badges</span><div class="marquee-dot"></div>
+      <span>Tooltips</span><div class="marquee-dot"></div>
+      <span>Gallery</span><div class="marquee-dot"></div>
+      <span>Testimonials</span><div class="marquee-dot"></div>
+    </div>
+  </div>
+</div>
+
+<!-- =====================================================
+     04 — ICONS
+===================================================== -->
+<section class="ds-section" id="icons" style="background: var(--color-bg);">
+  <div class="bg-grid"></div>
+  <div class="glow-orb" style="width:350px;height:350px;background:radial-gradient(circle,rgba(200,169,110,0.1) 0%,transparent 70%);top:50%;left:50%;position:absolute;transform:translate(-50%,-50%);"></div>
+  <div style="position:relative;z-index:1;">
+    <span class="ds-section__number">04 / Assets</span>
+    <div class="ds-section__label reveal">
+      <span class="ds-section__label-line"></span>
+      <span class="ds-section__label-text">Iconografia Solar</span>
+    </div>
+    <h2 class="ds-section__title reveal reveal-delay-1">
+      <span class="text-reveal-wrapper"><span class="text-reveal-content">ÍCONES</span></span>
+      <br>
+      <span class="text-reveal-wrapper"><span class="text-reveal-content delay-200"><em style="font-family:var(--font-display);color:var(--color-primary);">Solar Icon Set</em></span></span>
+    </h2>
+    <p class="reveal reveal-delay-2" style="font-size:var(--text-sm);color:var(--color-text-muted);max-width:55ch;margin-bottom:var(--space-12);">
+      Todos os ícones usam a biblioteca Solar (Iconify). Disponíveis em variantes <code style="font-family:var(--font-mono);color:var(--color-primary);">-linear</code>, <code style="font-family:var(--font-mono);color:var(--color-primary);">-bold</code> e <code style="font-family:var(--font-mono);color:var(--color-primary);">-broken</code>. Renderizados inline via SVG ou <code style="font-family:var(--font-mono);color:var(--color-primary);">&lt;iconify-icon&gt;</code>.
+    </p>
+    <div class="icon-grid reveal reveal-delay-2">
+      <!-- Using inline SVGs from the barbershop template -->
+      <div class="icon-item">
+        <svg aria-hidden="true" class="iconify iconify--solar" data-icon="solar:scissors-bold" height="1.75em" viewBox="0 0 24 24" width="1.75em" style="color:var(--color-primary);" xmlns="http://www.w3.org/2000/svg"><path d="M6.654 1.633a.75.75 0 0 0-1.308.735l5.794 10.304l-2.708 4.815a3.751 3.751 0 1 0-.136 3.303L12 14.202l3.704 6.588a3.75 3.75 0 1 0-.136-3.303l-2.708-4.815l5.794-10.304a.75.75 0 0 0-1.308-.735L12 11.142z" fill="currentColor"/></svg>
+        <span class="icon-name">scissors</span>
+      </div>
+      <div class="icon-item">
+        <svg aria-hidden="true" class="iconify iconify--solar" data-icon="solar:fire-bold" height="1.75em" viewBox="0 0 24 24" width="1.75em" style="color:var(--color-primary);" xmlns="http://www.w3.org/2000/svg"><path d="M12.832 21.801c3.126-.626 7.168-2.875 7.168-8.69c0-5.291-3.873-8.815-6.658-10.434c-.619-.36-1.342.113-1.342.828v1.828c0 1.442-.606 4.074-2.29 5.169c-.86.559-1.79-.278-1.894-1.298l-.086-.838c-.1-.974-1.092-1.565-1.87-.971C4.461 8.46 3 10.33 3 13.11C3 20.221 8.289 22 10.933 22" fill="currentColor"/></svg>
+        <span class="icon-name">fire</span>
+      </div>
+      <div class="icon-item">
+        <svg aria-hidden="true" class="iconify iconify--solar" data-icon="solar:crown-bold" height="1.75em" viewBox="0 0 24 24" width="1.75em" style="color:var(--color-primary);" xmlns="http://www.w3.org/2000/svg"><path d="m20.092 14.326l.193-1.894c.103-1.011.17-1.678.117-2.099h.02c.871 0 1.578-.746 1.578-1.666S21.293 7 20.421 7s-1.579.746-1.579 1.667c0 .416.145.797.384 1.089c-.343.223-.792.695-1.468 1.405c-.52.547-.78.82-1.07.863a.84.84 0 0 1-.473-.07c-.268-.124-.447-.462-.804-1.139L13.527 7.25c-.22-.417-.405-.766-.572-1.047c.683-.368 1.15-1.117 1.15-1.98C14.105 2.994 13.163 2 12 2s-2.105.995-2.105 2.222c0 .864.467 1.613 1.15 1.98l-3.884 5.596" fill="currentColor"/></svg>
+        <span class="icon-name">crown</span>
+      </div>
+      <div class="icon-item">
+        <svg aria-hidden="true" class="iconify iconify--solar" data-icon="solar:star-bold" height="1.75em" viewBox="0 0 24 24" width="1.75em" style="color:var(--color-primary);" xmlns="http://www.w3.org/2000/svg"><path d="M9.153 5.408C10.42 3.136 11.053 2 12 2s1.58 1.136 2.847 3.408l.328.588c.36.646.54.969.82 1.182s.63.292 1.33.45l.636.144c2.46.557 3.689.835 3.982 1.776c.292.94-.546 1.921-2.223 3.882l-.434.507c-.476.557-.715.836-.822 1.18c-.107.345-.071.717.001 1.46l.066.677c.253 2.617.38 3.925-.386 4.506s-1.918.051-4.22-1.009l-.597-.274c-.654-.302-.981-.452-1.328-.452s-.674.15-1.328.452l-.596.274c-2.303 1.06-3.455 1.59-4.22 1.01c-.767-.582-.64-1.89-.387-4.507l.066-.676" fill="currentColor"/></svg>
+        <span class="icon-name">star</span>
+      </div>
+      <div class="icon-item">
+        <svg aria-hidden="true" class="iconify iconify--solar" data-icon="solar:camera-bold" height="1.75em" viewBox="0 0 24 24" width="1.75em" style="color:var(--color-primary);" xmlns="http://www.w3.org/2000/svg"><path clip-rule="evenodd" d="M9.778 21h4.444c3.121 0 4.682 0 5.803-.735a4.4 4.4 0 0 0 1.226-1.204c.749-1.1.749-2.633.749-5.697s0-4.597-.749-5.697a4.4 4.4 0 0 0-1.226-1.204c-.72-.473-1.622-.642-3.003-.702c-.659 0-1.226-.49-1.355-1.125A2.064 2.064 0 0 0 13.634 3h-3.268c-.988 0-1.839.685-2.033 1.636c-.129.635-.696 1.125-1.355 1.125c-1.38.06-2.282.23-3.003.702A4.4 4.4 0 0 0 2.75 7.667C2 8.767 2 10.299 2 13.364s0 4.596.749 5.697" fill="currentColor" fill-rule="evenodd"/></svg>
+        <span class="icon-name">camera</span>
+      </div>
+      <div class="icon-item">
+        <svg aria-hidden="true" class="iconify iconify--solar" data-icon="solar:arrow-right-linear" height="1.75em" viewBox="0 0 24 24" width="1.75em" style="color:var(--color-primary);" xmlns="http://www.w3.org/2000/svg"><path d="M4 12h16m0 0l-6-6m6 6l-6 6" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/></svg>
+        <span class="icon-name">arrow-right</span>
+      </div>
+      <div class="icon-item">
+        <svg aria-hidden="true" class="iconify iconify--solar" data-icon="solar:arrow-right-up-linear" height="1.75em" viewBox="0 0 24 24" width="1.75em" style="color:var(--color-primary);" xmlns="http://www.w3.org/2000/svg"><path d="M6 18L18 6m0 0H9m9 0v9" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/></svg>
+        <span class="icon-name">arrow-up</span>
+      </div>
+      <div class="icon-item">
+        <svg aria-hidden="true" class="iconify iconify--solar" data-icon="solar:magic-stick-3-bold" height="1.75em" viewBox="0 0 24 24" width="1.75em" style="color:var(--color-primary);" xmlns="http://www.w3.org/2000/svg"><path d="M3.845 3.845a2.883 2.883 0 0 0 0 4.077L5.432 9.51l.038-.04l4-4l.04-.038l-1.588-1.587a2.883 2.883 0 0 0-4.077 0m6.723 2.645l-.038.04l-4 4l-.04.038l9.588 9.588a2.884 2.884 0 0 0 4.078-4.078z" fill="currentColor"/></svg>
+        <span class="icon-name">magic-stick</span>
+      </div>
+      <div class="icon-item">
+        <svg aria-hidden="true" class="iconify iconify--solar" data-icon="solar:waterdrop-bold" height="1.75em" viewBox="0 0 24 24" width="1.75em" style="color:var(--color-primary);" xmlns="http://www.w3.org/2000/svg"><path clip-rule="evenodd" d="M11.612 22C6.855 22 3 18.057 3 13.193v-.265C3 8.317 5.729 4.163 9.903 2.421a5.43 5.43 0 0 1 4.194 0C18.272 4.163 21 8.317 21 12.928v.265C21 18.057 17.145 22 12.389 22z" fill="currentColor" fill-rule="evenodd"/></svg>
+        <span class="icon-name">waterdrop</span>
+      </div>
+      <div class="icon-item">
+        <svg aria-hidden="true" class="iconify iconify--solar" data-icon="solar:face-scan-circle-bold" height="1.75em" viewBox="0 0 24 24" width="1.75em" style="color:var(--color-primary);" xmlns="http://www.w3.org/2000/svg"><path d="M12 19.583a7.583 7.583 0 1 0 0-15.166a7.583 7.583 0 0 0 0 15.166" fill="currentColor"/></svg>
+        <span class="icon-name">face-scan</span>
+      </div>
+      <div class="icon-item">
+        <svg aria-hidden="true" class="iconify iconify--solar" data-icon="solar:chat-round-dots-bold" height="1.75em" viewBox="0 0 24 24" width="1.75em" style="color:var(--color-primary);" xmlns="http://www.w3.org/2000/svg"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2S2 6.477 2 12c0 1.6.376 3.112 1.043 4.453c.178.356.237.763.134 1.148l-.595 2.226a1.3 1.3 0 0 0 1.591 1.592l2.226-.596" fill="currentColor"/></svg>
+        <span class="icon-name">chat</span>
+      </div>
+      <div class="icon-item">
+        <svg aria-hidden="true" class="iconify iconify--solar" data-icon="solar:pallete-2-bold" height="1.75em" viewBox="0 0 24 24" width="1.75em" style="color:var(--color-primary);" xmlns="http://www.w3.org/2000/svg"><path clip-rule="evenodd" d="M10.847 21.934C5.867 21.362 2 17.133 2 12C2 6.477 6.477 2 12 2s10 4.477 10 10c0 5.157-3.283 4.733-6.086 4.37c-1.618-.209-3.075-.397-3.652.518c-.395.626.032 1.406.555 1.929a1.673 1.673 0 0 1 0 2.366" fill="currentColor" fill-rule="evenodd"/></svg>
+        <span class="icon-name">palette</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =====================================================
+     05 — ANIMATIONS
+===================================================== -->
+<section class="ds-section section-dark" id="animations">
+  <div class="bg-grid" style="opacity:0.5;"></div>
+  <div class="glow-orb" style="width:600px;height:600px;background:radial-gradient(circle,rgba(200,169,110,0.07) 0%,transparent 70%);bottom:-200px;right:-100px;position:absolute;"></div>
+  <div style="position:relative;z-index:1;">
+    <span class="ds-section__number">05 / Interação</span>
+    <div class="ds-section__label reveal">
+      <span class="ds-section__label-line"></span>
+      <span class="ds-section__label-text">Motion & Animações</span>
+    </div>
+    <h2 class="ds-section__title reveal reveal-delay-1">
+      <span class="text-reveal-wrapper"><span class="text-reveal-content">SISTEMA DE</span></span>
+      <br>
+      <span class="text-reveal-wrapper"><span class="text-reveal-content delay-200"><em style="font-family:var(--font-display);color:var(--color-primary);">Movimento</em></span></span>
+    </h2>
+
+    <!-- Animation demos -->
+    <div class="grid-4 reveal reveal-delay-2" style="margin-bottom:var(--space-12);">
+      <!-- Scroll Reveal -->
+      <div class="anim-demo-card">
+        <div class="anim-box">
+          <div style="width:48px;height:48px;border:2px solid var(--color-primary);animation:bounceIn 2s var(--ease-out) infinite alternate;display:flex;align-items:center;justify-content:center;">
+            <svg aria-hidden="true" data-icon="solar:arrow-right-linear" height="1.25em" viewBox="0 0 24 24" width="1.25em" style="color:var(--color-primary);" xmlns="http://www.w3.org/2000/svg"><path d="M4 12h16m0 0l-6-6m6 6l-6 6" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/></svg>
+          </div>
+        </div>
+        <span class="anim-name">.reveal<br/>Scroll Reveal</span>
+        <span class="mono text-faint" style="font-size:10px;">translateY(2rem) → 0<br/>duration: 0.8s · ease-out</span>
+      </div>
+      <!-- Text Reveal -->
+      <div class="anim-demo-card">
+        <div class="anim-box" style="overflow:hidden;width:100%;">
+          <span style="font-family:var(--font-display);font-size:1.5rem;font-weight:700;color:var(--color-primary);animation:slideInLeft 1.5s var(--ease-out) infinite alternate;">Legado.</span>
+        </div>
+        <span class="anim-name">.text-reveal<br/>Masked Text</span>
+        <span class="mono text-faint" style="font-size:10px;">translateY(110%) → 0<br/>clip-mask overflow hidden</span>
+      </div>
+      <!-- Glow Pulse -->
+      <div class="anim-demo-card">
+        <div class="anim-box"><div class="anim-box-glow"></div></div>
+        <span class="anim-name">glowPulse<br/>Gold Glow</span>
+        <span class="mono text-faint" style="font-size:10px;">box-shadow oscillation<br/>duration: 2s · ease-in-out</span>
+      </div>
+      <!-- Spin -->
+      <div class="anim-demo-card">
+        <div class="anim-box">
+          <svg class="anim-box-spin" aria-hidden="true" data-icon="solar:atom-linear" height="2.5em" viewBox="0 0 24 24" width="2.5em" style="color:var(--color-primary);" xmlns="http://www.w3.org/2000/svg"><path d="M12 12c0 1.1-.9 2-2 2s-2-.9-2-2s.9-2 2-2s2 .9 2 2" fill="none" stroke="currentColor" stroke-width="1.5"/><ellipse cx="12" cy="12" fill="none" rx="10" ry="4" stroke="currentColor" stroke-width="1.5" transform="rotate(0 12 12)"/><ellipse cx="12" cy="12" fill="none" rx="10" ry="4" stroke="currentColor" stroke-width="1.5" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" fill="none" rx="10" ry="4" stroke="currentColor" stroke-width="1.5" transform="rotate(120 12 12)"/></svg>
+        </div>
+        <span class="anim-name">spinSlow<br/>Icon Spin</span>
+        <span class="mono text-faint" style="font-size:10px;">rotate 360°<br/>duration: 3s · linear</span>
+      </div>
+      <!-- Shimmer -->
+      <div class="anim-demo-card" style="grid-column: span 2;">
+        <div style="width:100%;padding: var(--space-4) 0;">
+          <div class="anim-box-shimmer" style="margin-bottom:8px;"></div>
+          <div class="anim-box-shimmer" style="width:70%;margin-bottom:8px;"></div>
+          <div class="anim-box-shimmer" style="width:50%;"></div>
+        </div>
+        <span class="anim-name">shimmer<br/>Loading Skeleton</span>
+        <span class="mono text-faint" style="font-size:10px;">background-position sweep<br/>200% → -200%</span>
+      </div>
+      <!-- Ken Burns -->
+      <div class="anim-demo-card" style="grid-column: span 2; padding:0; overflow:hidden; min-height:180px; position:relative;">
+        <img
+          src="templates/barbershop-landing-51.aura.build/assets/photo-1622286342621-4bd786c244_49252f554553.avif"
+          alt="Ken Burns demo"
+          class="ken-burns"
+          style="width:100%;height:180px;object-fit:cover;filter:saturate(0.6);"
+        />
+        <div style="position:absolute;bottom:var(--space-4);left:var(--space-6);">
+          <span class="anim-name">kenBurns<br/>Image Zoom</span>
+        </div>
+      </div>
+      <!-- Marquee demo -->
+      <div class="anim-demo-card" style="grid-column: span 4; padding: var(--space-6) 0; overflow:hidden;">
+        <div class="marquee-section" style="width:100%;">
+          <div class="marquee-track" style="animation-duration:20s;">
+            <div class="marquee-item">
+              <span>Marquee Infinito</span><div class="marquee-dot"></div>
+              <span>Hover para pausar</span><div class="marquee-dot"></div>
+              <span>Loop contínuo</span><div class="marquee-dot"></div>
+              <span>Mask nos extremos</span><div class="marquee-dot"></div>
+            </div>
+            <div class="marquee-item" aria-hidden="true">
+              <span>Marquee Infinito</span><div class="marquee-dot"></div>
+              <span>Hover para pausar</span><div class="marquee-dot"></div>
+              <span>Loop contínuo</span><div class="marquee-dot"></div>
+              <span>Mask nos extremos</span><div class="marquee-dot"></div>
+            </div>
+          </div>
+        </div>
+        <span class="anim-name" style="margin-top:var(--space-4);">marqueeScroll · Infinite Marquee</span>
+        <span class="mono text-faint" style="font-size:10px;">translateX 0% → -50% · 28s linear infinite</span>
+      </div>
+    </div>
+
+    <!-- Easing reference -->
+    <div class="ds-divider reveal"></div>
+    <h3 class="reveal" style="font-family:var(--font-mono);font-size:var(--text-xs);letter-spacing:0.25em;text-transform:uppercase;color:var(--color-text-faint);margin-bottom:var(--space-6);">Curvas de Easing do Sistema</h3>
+    <div class="grid-3 reveal reveal-delay-1">
+      <div class="anim-demo-card" style="align-items:flex-start;gap:var(--space-2);">
+        <span class="badge badge-glass">Ease Out</span>
+        <p class="mono" style="font-size:var(--text-xs);color:var(--color-primary);margin-top:var(--space-2);">cubic-bezier(0.16, 1, 0.3, 1)</p>
+        <p style="font-size:var(--text-xs);color:var(--color-text-faint);">Entradas de elementos · Reveals · Ken Burns</p>
+      </div>
+      <div class="anim-demo-card" style="align-items:flex-start;gap:var(--space-2);">
+        <span class="badge badge-glass">Ease In-Out</span>
+        <p class="mono" style="font-size:var(--text-xs);color:var(--color-primary);margin-top:var(--space-2);">cubic-bezier(0.4, 0, 0.2, 1)</p>
+        <p style="font-size:var(--text-xs);color:var(--color-text-faint);">Transições de estado · Hover · Focus</p>
+      </div>
+      <div class="anim-demo-card" style="align-items:flex-start;gap:var(--space-2);">
+        <span class="badge badge-glass">Linear</span>
+        <p class="mono" style="font-size:var(--text-xs);color:var(--color-primary);margin-top:var(--space-2);">linear</p>
+        <p style="font-size:var(--text-xs);color:var(--color-text-faint);">Marquee · Spin · Shimmer contínuos</p>
+      </div>
+    </div>
+
+    <!-- Duration tokens -->
+    <div class="ds-divider reveal"></div>
+    <h3 class="reveal" style="font-family:var(--font-mono);font-size:var(--text-xs);letter-spacing:0.25em;text-transform:uppercase;color:var(--color-text-faint);margin-bottom:var(--space-6);">Tokens de Duração</h3>
+    <div class="grid-4 reveal reveal-delay-1">
+      <div class="anim-demo-card" style="gap:var(--space-2);">
+        <span class="badge badge-outline">fast</span>
+        <p class="mono text-gold" style="font-size:var(--text-base);">200ms</p>
+        <p style="font-size:10px;color:var(--color-text-faint);">Hover · Focus states</p>
+      </div>
+      <div class="anim-demo-card" style="gap:var(--space-2);">
+        <span class="badge badge-outline">base</span>
+        <p class="mono text-gold" style="font-size:var(--text-base);">400ms</p>
+        <p style="font-size:10px;color:var(--color-text-faint);">Button reveals · Accordions</p>
+      </div>
+      <div class="anim-demo-card" style="gap:var(--space-2);">
+        <span class="badge badge-outline">slow</span>
+        <p class="mono text-gold" style="font-size:var(--text-base);">800ms</p>
+        <p style="font-size:10px;color:var(--color-text-faint);">Section reveals · Cards</p>
+      </div>
+      <div class="anim-demo-card" style="gap:var(--space-2);">
+        <span class="badge badge-outline">x-slow</span>
+        <p class="mono text-gold" style="font-size:var(--text-base);">1200ms</p>
+        <p style="font-size:10px;color:var(--color-text-faint);">Hero text · Page transitions</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Immersive fullscreen image break -->
+<section style="position:relative;height:60vh;overflow:hidden;display:flex;align-items:center;justify-content:center;">
+  <img
+    src="templates/barbershop-landing-51.aura.build/assets/photo-1633681926022-84c23e8cb2_e6bc846c0450.avif"
+    alt="Imersão visual"
+    class="parallax-img ken-burns"
+    data-speed="0.04"
+    style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:saturate(0.5) brightness(0.6);"
+  />
+  <div style="position:absolute;inset:0;background:linear-gradient(to bottom,var(--color-surface) 0%,transparent 30%,transparent 70%,var(--color-bg) 100%);"></div>
+  <div style="position:relative;z-index:2;text-align:center;padding:0 var(--space-6);">
+    <div class="section-tag reveal" style="justify-content:center;margin-bottom:var(--space-6);">
+      <span class="section-tag-line"></span>
+      <span class="section-tag-text">Design System Pronto</span>
+      <span class="section-tag-line"></span>
+    </div>
+    <h2 class="reveal reveal-delay-1 glow" style="font-family:var(--font-display);font-size:clamp(3rem,8vw,7rem);font-weight:900;letter-spacing:-0.03em;line-height:0.9;color:var(--color-text);">
+      <span class="text-reveal-wrapper"><span class="text-reveal-content">CONSTRUÍDO</span></span><br>
+      <span class="text-reveal-wrapper"><span class="text-reveal-content delay-200" style="color:var(--color-primary);font-style:italic;">para Impactar.</span></span>
+    </h2>
+  </div>
+</section>
+
+<!-- =====================================================
+     FOOTER
+===================================================== -->
+<footer class="footer">
+  <div class="bg-grid" style="position:absolute;inset:0;opacity:0.3;"></div>
+  <div style="position:relative;z-index:1;">
+    <div class="footer-top">
+      <div>
+        <div class="footer-brand-name">DESIGN <span class="text-gold">&</span> SYSTEM</div>
+        <p class="footer-brand-desc">Um sistema de design completo, modular e animado. Referências dos melhores templates, combinadas com criatividade e atenção a cada detalhe.</p>
+      </div>
+      <div>
+        <div class="footer-col-title">Seções</div>
+        <div class="footer-links">
+          <a href="#hero">00 — Hero</a>
+          <a href="#typography">01 — Tipografia</a>
+          <a href="#colors">02 — Cores</a>
+          <a href="#components">03 — Componentes</a>
+          <a href="#icons">04 — Ícones</a>
+          <a href="#animations">05 — Animações</a>
+        </div>
+      </div>
+      <div>
+        <div class="footer-col-title">Componentes</div>
+        <div class="footer-links">
+          <a href="#components">Botões</a>
+          <a href="#components">Inputs</a>
+          <a href="#components">Cards</a>
+          <a href="#components">Badges</a>
+          <a href="#components">Modais</a>
+          <a href="#components">Galeria</a>
+        </div>
+      </div>
+      <div>
+        <div class="footer-col-title">Fontes</div>
+        <div class="footer-links">
+          <a href="#">Barbershop Landing</a>
+          <a href="#">Digital Architect</a>
+          <a href="#">AEX Alpine</a>
+          <a href="#">Solar Iconify</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span class="footer-copy">© 2026 Design System — Todos os direitos reservados.</span>
+      <div class="footer-socials">
+        <a href="#">
+          <svg aria-hidden="true" class="iconify iconify--solar" data-icon="solar:camera-bold" height="1em" viewBox="0 0 24 24" width="1em" xmlns="http://www.w3.org/2000/svg"><path clip-rule="evenodd" d="M9.778 21h4.444c3.121 0 4.682 0 5.803-.735a4.4 4.4 0 0 0 1.226-1.204c.749-1.1.749-2.633.749-5.697s0-4.597-.749-5.697a4.4 4.4 0 0 0-1.226-1.204c-.72-.473-1.622-.642-3.003-.702" fill="currentColor" fill-rule="evenodd"/></svg>
+        </a>
+        <a href="#">
+          <svg aria-hidden="true" class="iconify iconify--solar" data-icon="solar:chat-round-dots-bold" height="1em" viewBox="0 0 24 24" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2S2 6.477 2 12c0 1.6.376 3.112 1.043 4.453" fill="currentColor"/></svg>
+        </a>
+        <a href="#">
+          <svg aria-hidden="true" class="iconify iconify--solar" data-icon="solar:arrow-right-up-linear" height="1em" viewBox="0 0 24 24" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M6 18L18 6m0 0H9m9 0v9" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/></svg>
+        </a>
+      </div>
+    </div>
+    <!-- Big watermark -->
+    <div style="margin-top:var(--space-16);text-align:center;opacity:0.04;pointer-events:none;overflow:hidden;user-select:none;">
+      <span style="font-family:var(--font-display);font-size:clamp(4rem,15vw,14rem);font-weight:900;letter-spacing:-0.04em;white-space:nowrap;color:var(--color-primary);">DESIGN SYSTEM</span>
+    </div>
+  </div>
+</footer>
+
+<!-- =====================================================
+     JAVASCRIPT
+===================================================== -->
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+
+    // ── 1. NAV LOAD ──────────────────────────────────────
+    setTimeout(() => {
+      document.querySelector('#site-nav').classList.add('loaded');
+    }, 120);
+
+    // ── 2. HERO TITLE TEXT REVEAL ─────────────────────────
+    setTimeout(() => {
+      const heroTitle = document.getElementById('hero-title');
+      if (heroTitle) heroTitle.classList.add('reveal-active');
+    }, 500);
+
+    // ── 3. SCROLL OBSERVER (reveal + text-reveal) ─────────
+    const observerOpts = { root: null, rootMargin: '0px', threshold: 0.12 };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('active');
+          // text reveal wrappers inside
+          const wrappers = entry.target.querySelectorAll('.text-reveal-wrapper');
+          if (wrappers.length > 0) {
+            entry.target.classList.add('reveal-active');
+          }
+          // h1 / h2 with text-reveal-content children
+          if ((entry.target.tagName === 'H1' || entry.target.tagName === 'H2') &&
+              entry.target.querySelector('.text-reveal-content')) {
+            entry.target.classList.add('reveal-active');
+          }
+        }
+      });
+    }, observerOpts);
+
+    document.querySelectorAll('.reveal, .fade-up').forEach(el => observer.observe(el));
+
+    // Observe headings with text-reveal-content
+    document.querySelectorAll('h1, h2').forEach(el => {
+      if (el.querySelector('.text-reveal-content')) observer.observe(el);
+    });
+
+    // ── 4. DS NAV ACTIVE STATE ────────────────────────────
+    const dsNavItems = document.querySelectorAll('.ds-nav-item');
+    const sections = document.querySelectorAll('section[id]');
+
+    const navObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const id = entry.target.getAttribute('id');
+          dsNavItems.forEach(item => {
+            item.classList.toggle('active', item.getAttribute('href') === `#${id}`);
+          });
+        }
+      });
+    }, { rootMargin: '-30% 0px -60% 0px' });
+
+    sections.forEach(s => navObserver.observe(s));
+
+    // ── 5. NAV SCROLL EFFECT ──────────────────────────────
+    const siteNav = document.getElementById('site-nav');
+    window.addEventListener('scroll', () => {
+      siteNav.style.background = window.scrollY > 40
+        ? 'rgba(13,13,13,0.98)'
+        : 'rgba(13,13,13,0.88)';
+    }, { passive: true });
+
+    // ── 6. PARALLAX ───────────────────────────────────────
+    window.addEventListener('scroll', () => {
+      const scrolled = window.scrollY;
+      document.querySelectorAll('.parallax-img').forEach(el => {
+        const speed = parseFloat(el.dataset.speed) || 0.05;
+        el.style.transform = `translateY(${scrolled * speed}px)`;
+      });
+    }, { passive: true });
+
+    // ── 7. MODAL ──────────────────────────────────────────
+    const backdrop = document.getElementById('modal-backdrop');
+    const openBtn = document.getElementById('open-modal');
+    const closeBtns = [
+      document.getElementById('close-modal'),
+      document.getElementById('close-modal-2'),
+      document.getElementById('close-modal-3'),
+    ];
+
+    openBtn?.addEventListener('click', () => backdrop.classList.add('open'));
+    closeBtns.forEach(btn => btn?.addEventListener('click', () => backdrop.classList.remove('open')));
+    backdrop?.addEventListener('click', e => {
+      if (e.target === backdrop) backdrop.classList.remove('open');
+    });
+
+    // ── 8. DS NAV SMOOTH SCROLL ───────────────────────────
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+      a.addEventListener('click', e => {
+        const target = document.querySelector(a.getAttribute('href'));
+        if (target) {
+          e.preventDefault();
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+
+    // ── 9. ICON ITEM CLICK COPY ───────────────────────────
+    document.querySelectorAll('.icon-item').forEach(item => {
+      item.addEventListener('click', () => {
+        const name = item.querySelector('.icon-name')?.textContent;
+        if (name) {
+          navigator.clipboard?.writeText(`solar:${name}-linear`).catch(() => {});
+          item.style.borderColor = 'rgba(200,169,110,0.8)';
+          setTimeout(() => { item.style.borderColor = ''; }, 600);
+        }
+      });
+    });
+
+  });
+</script>
+
+</body>
+</html>
