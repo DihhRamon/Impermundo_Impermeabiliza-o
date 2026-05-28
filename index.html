@@ -1105,7 +1105,7 @@
         font-size: 8rem;
       }
     }
-    }
+
 
     /* =============================================================
        SERVICES (DRAGGABLE/SNAP SCROLL)
@@ -1447,7 +1447,7 @@
 
     .partner-card:hover {
       transform: translateY(-6px);
-      box-shadow: 0 16px 32px rgba(0,0,0,0.4);
+      box-shadow: 0 16px 32px rgba(0, 0, 0, 0.4);
       background: #ffffff;
     }
 
@@ -1555,7 +1555,9 @@
       letter-spacing: 0.05em;
     }
 
-    .form-input, .form-select, .form-textarea {
+    .form-input,
+    .form-select,
+    .form-textarea {
       width: 100%;
       background: var(--color-bg);
       border: 1px solid var(--color-border);
@@ -1587,11 +1589,14 @@
       min-height: 120px;
     }
 
-    .form-input::placeholder, .form-textarea::placeholder {
+    .form-input::placeholder,
+    .form-textarea::placeholder {
       color: var(--color-text-faint);
     }
 
-    .form-input:focus, .form-select:focus, .form-textarea:focus {
+    .form-input:focus,
+    .form-select:focus,
+    .form-textarea:focus {
       border-color: var(--color-primary);
       box-shadow: 0 0 0 1px var(--color-primary);
     }
@@ -1606,6 +1611,7 @@
       .contact-grid {
         grid-template-columns: 1fr;
       }
+
       .contact-map-wrapper {
         min-height: 350px;
       }
@@ -1999,7 +2005,7 @@
             NOSSOS <span class="projects-title-italic">Parceiros</span>
           </h2>
         </div>
-        
+
         <div class="partners-grid">
           <div class="partner-card">
             <img src="assets/raw_files/parceiro_mrv.png" alt="MRV" loading="lazy" />
@@ -2022,7 +2028,7 @@
     ============================================================= -->
     <section class="contact-section" id="contato" aria-label="Faça uma cotação conosco">
       <div class="contact-container">
-        
+
         <div class="contact-header">
           <h2 class="contact-title">Faça Uma Cotação <span class="contact-title-gold">Conosco</span></h2>
           <p class="contact-subtitle">PREENCHA O FORMULÁRIO ABAIXO PARA RECEBER UMA COTAÇÃO.</p>
@@ -2031,7 +2037,10 @@
         <div class="contact-grid">
           <!-- Left: Map -->
           <div class="contact-map-wrapper">
-            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3753.1585860472494!2d-43.948283524673854!3d-19.833190881455588!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xa68fd463ab0b93%3A0xa193a650117b3d30!2sR.%20Nair%20Pentagna%20Guimar%C3%A3es%2C%20717%20-%20Heli%C3%B3polis%2C%20Belo%20Horizonte%20-%20MG%2C%2031741-545!5e0!3m2!1spt-BR!2sbr!4v1716942973952!5m2!1spt-BR!2sbr" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Mapa Impermundo Impermeabilização"></iframe>
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3753.1585860472494!2d-43.948283524673854!3d-19.833190881455588!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xa68fd463ab0b93%3A0xa193a650117b3d30!2sR.%20Nair%20Pentagna%20Guimar%C3%A3es%2C%20717%20-%20Heli%C3%B3polis%2C%20Belo%20Horizonte%20-%20MG%2C%2031741-545!5e0!3m2!1spt-BR!2sbr!4v1716942973952!5m2!1spt-BR!2sbr"
+              style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+              title="Mapa Impermundo Impermeabilização"></iframe>
           </div>
 
           <!-- Right: Form -->
@@ -2050,11 +2059,13 @@
             <div class="form-row">
               <div class="form-group">
                 <label for="cidade" class="form-label">Qual sua Cidade?</label>
-                <input type="text" id="cidade" name="cidade" class="form-input" placeholder="Digite Sua Cidade" required>
+                <input type="text" id="cidade" name="cidade" class="form-input" placeholder="Digite Sua Cidade"
+                  required>
               </div>
               <div class="form-group">
                 <label for="telefone" class="form-label">Qual o Seu Telefone?</label>
-                <input type="tel" id="telefone" name="telefone" class="form-input" placeholder="DDD + Telefone" required>
+                <input type="tel" id="telefone" name="telefone" class="form-input" placeholder="DDD + Telefone"
+                  required>
               </div>
             </div>
 
@@ -2071,13 +2082,15 @@
 
             <div class="form-group">
               <label for="assunto" class="form-label">Qual o Assunto?</label>
-              <textarea id="assunto" name="assunto" class="form-textarea" placeholder="Descreva brevemente o seu projeto ou necessidade..." required></textarea>
+              <textarea id="assunto" name="assunto" class="form-textarea"
+                placeholder="Descreva brevemente o seu projeto ou necessidade..." required></textarea>
             </div>
 
             <button type="submit" class="btn-primary form-submit">
               <span>Obter Cotação</span>
               <svg viewBox="0 0 24 24" fill="none" width="20" height="20" aria-hidden="true">
-                <path d="M4 12H20M20 12L14 6M20 12L14 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                <path d="M4 12H20M20 12L14 6M20 12L14 18" stroke="currentColor" stroke-width="1.5"
+                  stroke-linecap="round" stroke-linejoin="round" />
               </svg>
             </button>
           </form>
